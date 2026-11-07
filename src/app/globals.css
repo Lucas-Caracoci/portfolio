@@ -1,22 +1,41 @@
 @import "tailwindcss";
 
-:root {
-  --background: #020203;
-  --foreground: #f1f5f9;
-  --cyan-core: #00f5ff;
-  --cyan-glow: #22d3ee;
-  --cobalt-deep: #1d4ed8;
-  --void-black: #020203;
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root,
+html.light {
+  --bg-base: #f6f8fc;
+  --bg-surface: #ffffff;
+  --bg-elevated: #ecf0f8;
+  --fg-primary: #0b0d14;
+  --fg-muted: #50576b;
+  --border-subtle: rgba(11, 13, 20, 0.1);
+  --border-strong: rgba(11, 13, 20, 0.2);
+  --accent-main: #1d3bff;
+  --accent-fg: #ffffff;
+  --accent-secondary: #d2ff00;
+  color-scheme: light;
+}
+
+html.dark {
+  --bg-base: #08090e;
+  --bg-surface: #10131e;
+  --bg-elevated: #171c2b;
+  --fg-primary: #f5f7fa;
+  --fg-muted: #929ab0;
+  --border-subtle: rgba(245, 247, 250, 0.1);
+  --border-strong: rgba(245, 247, 250, 0.22);
+  --accent-main: #d2ff00;
+  --accent-fg: #08090e;
+  --accent-secondary: #2b4cff;
+  color-scheme: dark;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--bg-base);
+  --color-foreground: var(--fg-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-cyan-core: var(--cyan-core);
-  --color-cyan-glow: var(--cyan-glow);
-  --color-cobalt-deep: var(--cobalt-deep);
 }
 
 * {
@@ -24,62 +43,60 @@
 }
 
 html {
-  background-color: #020203;
-  color: #f1f5f9;
-  color-scheme: dark;
+  background-color: var(--bg-base);
+  color: var(--fg-primary);
   scroll-behavior: smooth;
+  transition: background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 body {
-  background-color: #020203;
-  color: #f1f5f9;
+  background-color: var(--bg-base);
+  color: var(--fg-primary);
   font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
   overflow-x: hidden;
+  transition: background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 ::selection {
-  background-color: rgba(0, 245, 255, 0.3);
-  color: #ffffff;
+  background-color: var(--accent-main);
+  color: var(--accent-fg);
 }
 
-/* Accessible keyboard focus ring (Rule B9) */
 :focus-visible {
-  outline: 2px solid #00f5ff;
+  outline: 2px solid var(--accent-main);
   outline-offset: 2px;
 }
 
-/* Glassmorphism obsidian surfaces over the WebGL dot grid */
-.glass-panel {
-  background: rgba(4, 6, 12, 0.72);
+.v3-surface {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  transition: background-color 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.v3-glass {
+  background-color: color-mix(in srgb, var(--bg-surface) 82%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(34, 211, 238, 0.14);
+  border: 1px solid var(--border-subtle);
 }
 
-.glass-panel-hover {
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.glass-panel-hover:hover {
-  background: rgba(8, 13, 26, 0.88);
-  border-color: rgba(34, 211, 238, 0.38);
-  box-shadow: 0 0 25px -5px rgba(0, 245, 255, 0.18);
-}
-
-/* Custom minimal scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #020203;
+  background: var(--bg-base);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: rgba(130, 140, 165, 0.35);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #0284c7;
+  background: var(--accent-main);
 }
