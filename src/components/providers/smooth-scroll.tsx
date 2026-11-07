@@ -7,26 +7,36 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 
 gsap.registerPlugin(ScrollTrigger);
 
+declare global {
+  interface Window {
+    __lenisVelocity?: number;
+  }
+}
+
 interface SmoothScrollProps {
   children: ReactNode;
 }
 
+const expoOut = (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t));
+
 export function SmoothScroll({ children }: SmoothScrollProps) {
   useEffect(() => {
-    // Initialize single Lenis instance unconditionally so Windows OS visual-effects settings never kill smooth scroll
+    window.__lenisVelocity = 0;
+
     const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
+      lerp: 0.085,
       smoothWheel: true,
       wheelMultiplier: 0.95,
       touchMultiplier: 1.5,
       anchors: true,
+      allowNestedScroll: true,
+      respectReducedMotion: false,
     });
 
-    // Synchronize Lenis with GSAP ScrollTrigger
-    lenis.on("scroll", ScrollTrigger.update);
+    lenis.on("scroll", (e: { velocity: number }) => {
+      window.__lenisVelocity = e.velocity;
+      ScrollTrigger.update();
+    });
 
     const updateLenis = (time: number) => {
       lenis.raf(time * 1000);
@@ -39,11 +49,11 @@ export function SmoothScroll({ children }: SmoothScrollProps) {
       const customEvent = e as CustomEvent<{ target: string | number }>;
       const target = customEvent.detail?.target;
       if (target === 0) {
-        lenis.scrollTo(0, { duration: 1.2 });
+        lenis.scrollTo(0, { duration: 1.25, easing: expoOut });
       } else if (typeof target === "string") {
         const el = document.getElementById(target);
         if (el) {
-          lenis.scrollTo(el, { offset: -24, duration: 1.2 });
+          lenis.scrollTo(el, { offset: -24, duration: 1.25, easing: expoOut });
         }
       }
     };

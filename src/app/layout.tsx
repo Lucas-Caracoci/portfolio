@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,37 +12,42 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif",
+  weight: "400",
+  subsets: ["latin"],
+});
+
 export const viewport: Viewport = {
-  themeColor: "#020203",
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
-  title: "Lucas Caracoci — Arquiteto de Software & Engenheiro Full-Stack",
+  title: "Lucas Caracoci — Engenheiro de Software Full-Stack",
   description:
-    "Portfólio de engenharia de Lucas Caracoci. Especialista em monólitos modulares (Laravel / React / Inertia), arquitetura Cloud, pipelines de dados e interfaces de precisão cirúrgica.",
-  keywords: [
-    "Lucas Caracoci",
-    "Engenheiro de Software",
-    "Arquiteto de Software",
-    "Laravel",
-    "React",
-    "Next.js",
-    "Inertia.js",
-    "PostgreSQL",
-    "Cloud Computing",
-    "Design Engineering",
-  ],
+    "Engenheiro de Software Full-Stack. Sistemas web rápidos, seguros e prontos para produção com Laravel, React, Next.js e PostgreSQL.",
   authors: [{ name: "Lucas Caracoci", url: "https://github.com/Lucas-Caracoci" }],
   openGraph: {
-    title: "Lucas Caracoci — Arquiteto de Software & Engenheiro Full-Stack",
+    title: "Lucas Caracoci — Engenheiro de Software Full-Stack",
     description:
-      "Engenharia de alta confiabilidade e interfaces de precisão cirúrgica. Monólitos modulares, pipelines ETL e design engineering.",
+      "Sistemas web rápidos, seguros e prontos para produção com Laravel, React, Next.js e PostgreSQL.",
     type: "website",
     locale: "pt_BR",
   },
 };
+
+const themeInitScript = `
+(function() {
+  try {
+    var saved = localStorage.getItem('portfolio-v4-theme');
+    var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    var theme = (saved === 'dark' || saved === 'light') ? saved : (prefersDark ? 'dark' : 'light');
+    document.documentElement.classList.remove('light', 'dark');
+    document.documentElement.classList.add(theme);
+  } catch (e) {}
+})();
+`;
 
 export default function RootLayout({
   children,
@@ -52,11 +57,13 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
+      suppressHydrationWarning
+      className={`${geistSans.variable} ${geistMono.variable} ${instrumentSerif.variable} antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#020203] text-slate-100 selection:bg-cyan-500/30 selection:text-white">
-        {children}
-      </body>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-screen flex flex-col">{children}</body>
     </html>
   );
 }

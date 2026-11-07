@@ -2,65 +2,62 @@
 
 import { useState } from "react";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
-import { Navbar } from "@/components/navbar";
 import { CommandMenu } from "@/components/command-menu";
-import { FluidBackground } from "@/components/hero-shader-background";
-import { HeroSection } from "@/components/sections/hero";
-import { CaseStudiesSection } from "@/components/sections/case-studies";
-import { SkillsMatrixSection } from "@/components/sections/skills-matrix";
-import { ExperienceTimelineSection } from "@/components/sections/experience-timeline";
-import { SystemTerminal } from "@/components/sections/system-terminal";
-import { ContactFooter } from "@/components/sections/contact-footer";
+import { ThemeProvider } from "@/components/v4/theme-provider";
+import { EtherealScene } from "@/components/v4/ethereal-scene";
+import { EtherealNavbar } from "@/components/v4/ethereal-navbar";
+import { EtherealHero } from "@/components/v4/ethereal-hero";
+import { EtherealProjects } from "@/components/v4/ethereal-projects";
+import { EtherealStack } from "@/components/v4/ethereal-stack";
+import { EtherealCareer } from "@/components/v4/ethereal-career";
+import { EtherealFooter } from "@/components/v4/ethereal-footer";
 
 export default function HomePage() {
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
 
   return (
-    <SmoothScroll>
-      <div className="relative min-h-screen bg-[#020203] text-slate-100 flex flex-col">
-        {/* Skip to Content link for Keyboard Accessibility (Rule B10) */}
-        <a
-          href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-xl focus:bg-cyan-400 focus:text-slate-950 focus:font-mono focus:text-xs focus:font-semibold"
-        >
-          Pular para o conteúdo principal
-        </a>
+    <ThemeProvider>
+      <SmoothScroll>
+        <div className="relative min-h-screen bg-[var(--bg-base)] text-[var(--fg-primary)] flex flex-col">
+          {/* Skip to Content link for Keyboard Accessibility */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 rounded-full ethereal-cta font-mono text-xs font-medium"
+          >
+            Pular para o conteúdo principal
+          </a>
 
-        {/* Global WebGL Fluid Gradient (Header/Hero) + Continuous Animated Dot Mesh (Site Body) */}
-        <div className="fixed inset-0 z-0 pointer-events-none select-none">
-          <FluidBackground dimming={0.05} dotIntensity={1.0} />
+          {/* Continuous Full-Viewport 3D Bokeh Particle & Mist Scene */}
+          <EtherealScene />
+
+          {/* Floating Iridescent Glass Navigation Bar */}
+          <EtherealNavbar onOpenCommand={() => setCommandMenuOpen(true)} />
+
+          {/* Frosted Spatial Command Palette (⌘K) */}
+          <CommandMenu
+            open={commandMenuOpen}
+            onOpenChange={setCommandMenuOpen}
+          />
+
+          {/* Transparent Spatial Content Flow over the 3D Journey */}
+          <main id="main-content" className="relative z-10 flex-1 w-full">
+            {/* Stage 0: Ethereal Silk Sculpture Hero */}
+            <EtherealHero />
+
+            {/* Stage 1: Production Systems on Translucent Spatial Glass */}
+            <EtherealProjects />
+
+            {/* Stage 2: Core Technical Stack */}
+            <EtherealStack />
+
+            {/* Stage 2b: Luminous Thread Career Progression */}
+            <EtherealCareer />
+          </main>
+
+          {/* Stage 3: Serene Horizon Contact Footer */}
+          <EtherealFooter />
         </div>
-
-        {/* Floating Header Navbar */}
-        <Navbar onOpenCommand={() => setCommandMenuOpen(true)} />
-
-        {/* Raycast-style Command Menu (⌘K) */}
-        <CommandMenu
-          open={commandMenuOpen}
-          onOpenChange={setCommandMenuOpen}
-        />
-
-        {/* Page Content Flow — Ordered by Hierarchy of Importance */}
-        <main id="main-content" className="relative z-10 flex-1 w-full">
-          {/* 00. Hero over the Fluid Kura Gradient */}
-          <HeroSection />
-
-          {/* 01. Selected Production Systems (GIDE, Concursos, Meu Porto, PizzaShop) */}
-          <CaseStudiesSection />
-
-          {/* 02. Architecture & Technical Domains Index */}
-          <SkillsMatrixSection />
-
-          {/* 03. Professional Experience & Career Timeline */}
-          <ExperienceTimelineSection />
-
-          {/* 04. Interactive System Terminal Playground */}
-          <SystemTerminal />
-        </main>
-
-        {/* 05. Tactile Footer & Direct Contact */}
-        <ContactFooter />
-      </div>
-    </SmoothScroll>
+      </SmoothScroll>
+    </ThemeProvider>
   );
 }
