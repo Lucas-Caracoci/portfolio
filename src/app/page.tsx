@@ -4,11 +4,12 @@ import { useState } from "react";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { Navbar } from "@/components/navbar";
 import { CommandMenu } from "@/components/command-menu";
+import { FluidBackground } from "@/components/hero-shader-background";
 import { HeroSection } from "@/components/sections/hero";
-import { MetricsRibbon } from "@/components/sections/metrics-ribbon";
 import { CaseStudiesSection } from "@/components/sections/case-studies";
-import { SystemTerminal } from "@/components/sections/system-terminal";
 import { SkillsMatrixSection } from "@/components/sections/skills-matrix";
+import { ExperienceTimelineSection } from "@/components/sections/experience-timeline";
+import { SystemTerminal } from "@/components/sections/system-terminal";
 import { ContactFooter } from "@/components/sections/contact-footer";
 
 export default function HomePage() {
@@ -16,7 +17,20 @@ export default function HomePage() {
 
   return (
     <SmoothScroll>
-      <div className="relative min-h-screen bg-[#030712] text-slate-100 flex flex-col">
+      <div className="relative min-h-screen bg-[#020203] text-slate-100 flex flex-col">
+        {/* Skip to Content link for Keyboard Accessibility (Rule B10) */}
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-xl focus:bg-cyan-400 focus:text-slate-950 focus:font-mono focus:text-xs focus:font-semibold"
+        >
+          Pular para o conteúdo principal
+        </a>
+
+        {/* Global WebGL Fluid Gradient (Header/Hero) + Continuous Animated Dot Mesh (Site Body) */}
+        <div className="fixed inset-0 z-0 pointer-events-none select-none">
+          <FluidBackground dimming={0.05} dotIntensity={1.0} />
+        </div>
+
         {/* Floating Header Navbar */}
         <Navbar onOpenCommand={() => setCommandMenuOpen(true)} />
 
@@ -26,25 +40,25 @@ export default function HomePage() {
           onOpenChange={setCommandMenuOpen}
         />
 
-        {/* Page Content Flow */}
-        <main className="flex-1 w-full">
-          {/* 1. Hero with Cyan Aurora Shader & Dot Matrix */}
+        {/* Page Content Flow — Ordered by Hierarchy of Importance */}
+        <main id="main-content" className="relative z-10 flex-1 w-full">
+          {/* 00. Hero over the Fluid Kura Gradient */}
           <HeroSection />
 
-          {/* 2. Real Metrics Ribbon */}
-          <MetricsRibbon />
-
-          {/* 3. Deep Case Studies (GIDE, Concursos PMAC, Meu Porto, PizzaShop) */}
+          {/* 01. Selected Production Systems (GIDE, Concursos, Meu Porto, PizzaShop) */}
           <CaseStudiesSection />
 
-          {/* 4. Interactive Linux Terminal Playground */}
-          <SystemTerminal />
-
-          {/* 5. Capabilities & Architecture Matrix */}
+          {/* 02. Architecture & Technical Domains Index */}
           <SkillsMatrixSection />
+
+          {/* 03. Professional Experience & Career Timeline */}
+          <ExperienceTimelineSection />
+
+          {/* 04. Interactive System Terminal Playground */}
+          <SystemTerminal />
         </main>
 
-        {/* 6. Tactile Footer & Contact */}
+        {/* 05. Tactile Footer & Direct Contact */}
         <ContactFooter />
       </div>
     </SmoothScroll>

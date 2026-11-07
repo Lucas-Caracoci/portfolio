@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#030712",
+  themeColor: "#020203",
   width: "device-width",
   initialScale: 1,
 };
@@ -21,20 +21,20 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Lucas Caracoci — Arquiteto de Software & Engenheiro Full-Stack",
   description:
-    "Portfólio de engenharia de Lucas Caracoci. Especialista em monólitos modulares (Laravel 12 / React 19 / Inertia), pipelines ETL criptografados no PostgreSQL e interfaces de precisão cirúrgica.",
+    "Portfólio de engenharia de Lucas Caracoci. Especialista em monólitos modulares (Laravel / React / Inertia), arquitetura Cloud, pipelines de dados e interfaces de precisão cirúrgica.",
   keywords: [
     "Lucas Caracoci",
     "Engenheiro de Software",
     "Arquiteto de Software",
-    "Laravel 12",
-    "React 19",
+    "Laravel",
+    "React",
+    "Next.js",
     "Inertia.js",
     "PostgreSQL",
-    "Python ETL",
-    "Docker",
+    "Cloud Computing",
     "Design Engineering",
   ],
-  authors: [{ name: "Lucas Caracoci", url: "https://github.com/lucascaracoci" }],
+  authors: [{ name: "Lucas Caracoci", url: "https://github.com/Lucas-Caracoci" }],
   openGraph: {
     title: "Lucas Caracoci — Arquiteto de Software & Engenheiro Full-Stack",
     description:
@@ -54,7 +54,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col bg-[#030712] text-slate-100 selection:bg-cyan-500/30 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#020203] text-slate-100 selection:bg-cyan-500/30 selection:text-white">
         {children}
       </body>
     </html>

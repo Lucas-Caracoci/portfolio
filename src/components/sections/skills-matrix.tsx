@@ -1,102 +1,122 @@
-import { Code, Layout, Database, CheckCircle2 } from "lucide-react";
+"use client";
+
+import { motion } from "framer-motion";
+
+const easeOutCustom = [0.22, 1, 0.36, 1] as const;
 
 export function SkillsMatrixSection() {
   const domains = [
     {
-      icon: Code,
-      title: "Backend & Arquitetura",
-      description: "Construção de monólitos modulares resilientes e APIs RESTful estruturadas.",
-      capabilities: [
-        "PHP 8.5 & Laravel 12 (Service Pattern, DTOs, Policies)",
-        "Gotenberg PDF Engine (Microserviço Docker headless)",
-        "Python 3.12 (Pipelines ETL, Criptografia Fernet AES)",
-        "SSO & OAuth2 (Tokens JWT e autenticação unificada)",
-        "Filas Assíncronas & Jobs com Redis e Supervisor",
+      index: "01",
+      title: "Backend & Engenharia de Sistemas",
+      summary: "Monólitos modulares desacoplados, motores de documentos e pipelines de dados.",
+      tags: [
+        "PHP & Laravel",
+        "Service Pattern & DTOs",
+        "Python ETL",
+        "PDF Headless Engine",
+        "SSO & OAuth2",
+        "RBAC Granular",
       ],
     },
     {
-      icon: Layout,
+      index: "02",
       title: "Frontend & Design Engineering",
-      description: "Interfaces com fidelidade de design, transições fluidas e microinterações táteis.",
-      capabilities: [
-        "React 19 & Next.js 15 (App Router, SSG, Server Actions)",
-        "Inertia.js (Integração semântica monólito-frontend)",
-        "Tailwind CSS v4 & Shaders WebGL / Three.js",
-        "GSAP 3 (ScrollTrigger) & Lenis (Single Smooth Scroll)",
-        "Framer Motion & Componentes Acessíveis Radix UI",
+      summary: "Interfaces reativas de alta precisão, sincronização local e gráficos interativos.",
+      tags: [
+        "React 19 & Next.js",
+        "Inertia.js",
+        "TypeScript",
+        "Tailwind CSS v4",
+        "Dexie.js (IndexedDB)",
+        "TanStack Query",
+        "Three.js & GLSL",
       ],
     },
     {
-      icon: Database,
-      title: "Dados & Infraestrutura",
-      description: "Modelagem relacional consistente, integridade transacional e conteinerização.",
-      capabilities: [
-        "PostgreSQL 18 (UUIDs v7, Índices B-Tree, Schemas)",
-        "Docker & Docker Compose (Redes bridge isoladas)",
-        "Linux VPS (CachyOS/Arch, Nginx Proxy Manager, SSL)",
-        "Redis (Cache em memória e invalidação seletiva)",
-        "Backups Automatizados & Retenção com Checksums",
+      index: "03",
+      title: "Cloud Computing, Dados & Infra",
+      summary: "Persistência relacional consistente, filas supervisionadas e conteinerização.",
+      tags: [
+        "PostgreSQL & MySQL",
+        "Docker & Compose",
+        "Redis & Horizon",
+        "Cloud Architecture",
+        "Transações ACID",
+        "Backups Automatizados",
       ],
     },
     {
-      icon: CheckCircle2,
-      title: "Qualidade & Ferramentas",
-      description: "Padrões de engenharia rigorosos para longevidade e manutenibilidade do código.",
-      capabilities: [
-        "Análise Estática com Larastan (PHPStan Nível 8)",
-        "Pint & ESLint para formatação e padrões de código",
-        "Validação de Contratos com Zod & Form Requests",
-        "Git Flow, versionamento semântico e code review",
-        "Acessibilidade WCAG e suporte a prefers-reduced-motion",
+      index: "04",
+      title: "Qualidade, Segurança & DX",
+      summary: "Contratos tipados de ponta a ponta, suítes de teste e análise estática.",
+      tags: [
+        "PHPUnit",
+        "Zod & React Hook Form",
+        "Análise Estática",
+        "Trilhas de Auditoria",
+        "Laravel Pint & ESLint",
+        "Git Flow",
       ],
     },
   ];
 
   return (
     <section id="skills" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
-      <div className="mb-14">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/20 text-xs font-mono text-cyan-400 mb-3">
-          <Code className="w-3.5 h-3.5" />
-          <span>CAPACIDADES TÉCNICAS</span>
+      <motion.div
+        initial={{ opacity: 0, y: 14 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.4, ease: easeOutCustom }}
+        className="mb-12"
+      >
+        <div className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
+          02 / ARQUITETURA & DOMÍNIOS
         </div>
-        <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-slate-100 mb-4">
-          Matriz de Arquitetura & Domínios.
+        <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-slate-100 text-balance">
+          Especificações técnicas.
         </h2>
-        <p className="text-base text-slate-400 max-w-2xl font-sans">
-          Competências organizadas por áreas de responsabilidade técnica, fundamentadas em
-          aplicações reais de produção.
-        </p>
-      </div>
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {domains.map((domain, idx) => {
-          const Icon = domain.icon;
-          return (
-            <div
-              key={idx}
-              className="glass-panel p-6 sm:p-8 rounded-2xl border border-cyan-500/15 hover:border-cyan-500/35 transition-all duration-200 group"
-            >
-              <div className="flex items-center gap-3.5 mb-4">
-                <div className="p-2.5 rounded-xl bg-cyan-950/80 border border-cyan-500/25 text-cyan-400 group-hover:scale-105 transition-transform">
-                  <Icon className="w-5 h-5" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-slate-100">{domain.title}</h3>
-                  <p className="text-xs text-slate-400 font-sans mt-0.5">{domain.description}</p>
-                </div>
+      {/* Horizontal Editorial Specification Index (Anti-Slop: replaces generic 2x2 boxy icon cards) */}
+      <div className="border-t border-white/15 divide-y divide-white/10">
+        {domains.map((domain, idx) => (
+          <motion.div
+            key={domain.index}
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{
+              duration: 0.35,
+              delay: idx * 0.05,
+              ease: easeOutCustom,
+            }}
+            className="py-8 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start transition-colors duration-200 hover:bg-white/[0.01]"
+          >
+            <div className="lg:col-span-5 pr-4">
+              <div className="flex items-baseline gap-3 mb-1.5">
+                <span className="text-xs font-mono text-cyan-400">{domain.index}</span>
+                <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
+                  {domain.title}
+                </h3>
               </div>
-
-              <div className="space-y-2.5 pt-4 border-t border-slate-800/80">
-                {domain.capabilities.map((cap, capIdx) => (
-                  <div key={capIdx} className="flex items-center gap-2.5 text-xs text-slate-300 font-mono">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-                    <span>{cap}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="text-sm text-slate-400 font-sans text-pretty leading-relaxed pl-7">
+                {domain.summary}
+              </p>
             </div>
-          );
-        })}
+
+            <div className="lg:col-span-7 flex flex-wrap gap-2 lg:justify-end">
+              {domain.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1.5 rounded-lg bg-[#020203]/85 border border-white/12 hover:border-cyan-400/50 hover:-translate-y-0.5 text-xs font-mono text-slate-200 transition-all duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] select-none"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+        ))}
       </div>
     </section>
   );

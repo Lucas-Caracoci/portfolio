@@ -7,19 +7,21 @@ const vertexShader = `
   varying vec2 vUv;
   void main() {
     vUv = uv;
-    gl_Position = vec4(position, 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
   }
 `;
 
 const fragmentShader = `
-  uniform float u_time;
-  uniform vec2 u_resolution;
-  uniform vec2 u_mouse;
+  uniform float uTime;
+  uniform vec2 uResolution;
+  uniform vec2 uMouse;
+  uniform float uDimming;
+  uniform float uDotIntensity;
+  uniform float uScroll;
   varying vec2 vUv;
 
-  // 2D Simplex Noise generator
+  // Ashima 2D Simplex Noise
   vec3 permute(vec3 x) { return mod(((x*34.0)+1.0)*x, 289.0); }
-
   float snoise(vec2 v){
     const vec4 C = vec4(0.211324865405187, 0.366025403784439,
              -0.577350269189626, 0.024390243902439);
@@ -31,7 +33,7 @@ const fragmentShader = `
     x12.xy -= i1;
     i = mod(i, 289.0);
     vec3 p = permute( permute( i.y + vec3(0.0, i1.y, 1.0 ))
-    + i.x + vec3(0.0, i1.x, 1.0 ));
+      + i.x + vec3(0.0, i1.x, 1.0 ));
     vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy),
       dot(x12.zw,x12.zw)), 0.0);
     m = m*m ;
@@ -47,106 +49,101 @@ const fragmentShader = `
     return 130.0 * dot(m, g);
   }
 
-  // Fractional Brownian Motion for fluid turbulence
-  float fbm(vec2 p) {
-    float total = 0.0;
-    float amplitude = 0.5;
-    for (int i = 0; i < 4; i++) {
-      total += snoise(p) * amplitude;
-      p *= 2.05;
-      amplitude *= 0.5;
-    }
-    return total;
-  }
-
   void main() {
-    vec2 st = gl_FragCoord.xy / u_resolution.xy;
-    st.x *= u_resolution.x / u_resolution.y;
+      vec2 uv = vUv;
+      vec2 fragCoord = vUv * uResolution;
+      
+      vec2 mouseOffset = (uMouse - 0.5) * 0.05;
+      
+      // 1. GRADIENTE FLUIDO ("Kura" distortion + 5 stops de cor)
+      float n1 = snoise(vec2((uv.x + mouseOffset.x) * 1.4 - uTime * 0.12, (uv.y + mouseOffset.y) * 1.4 + uTime * 0.08));
+      float n2 = snoise(vec2(uv.x * 3.2 + uTime * 0.18, uv.y * 2.8 - uTime * 0.14));
+      
+      float flow = uv.x + n1 * 0.32 + n2 * 0.12;
+      
+      vec3 c1 = vec3(0.85, 0.98, 1.00); // Branco Ciano brilhante (esquerda)
+      vec3 c2 = vec3(0.00, 0.85, 0.92); // Turquesa / Ciano vibrante
+      vec3 c3 = vec3(0.05, 0.45, 0.95); // Azul Royal médio
+      vec3 c4 = vec3(0.06, 0.12, 0.42); // Azul Índigo escuro
+      vec3 c5 = vec3(0.008, 0.008, 0.012); // #020203 (Fundo quase preto à direita)
+      
+      vec3 gradColor = mix(c1, c2, smoothstep(0.05, 0.25, flow));
+      gradColor = mix(gradColor, c3, smoothstep(0.22, 0.42, flow));
+      gradColor = mix(gradColor, c4, smoothstep(0.38, 0.62, flow));
+      gradColor = mix(gradColor, c5, smoothstep(0.55, 0.82, flow));
 
-    vec2 mouseOffset = (u_mouse - 0.5) * 0.45;
-    vec2 pos = st * 1.6 - mouseOffset;
+      // Faz a transição suave do gradiente para #020203 ao descer da Hero, mantendo a grelha viva
+      float heroStrength = 1.0 - smoothstep(0.0, 0.85, uScroll);
+      vec3 color = mix(c5, gradColor, heroStrength);
 
-    float t = u_time * 0.18;
-
-    // Organic Domain Warping
-    vec2 q = vec2(fbm(pos + vec2(0.0, t * 0.2)), fbm(pos + vec2(5.2, 1.3 - t * 0.15)));
-    vec2 r = vec2(fbm(pos + 3.0 * q + vec2(1.7 - t * 0.1, 9.2)), fbm(pos + 3.0 * q + vec2(8.3, 2.8 + t * 0.12)));
-
-    float f = fbm(pos + 4.0 * r);
-
-    // Color Palette inspired by reference video:
-    // Void base -> Royal Cobalt -> Electric Cyan -> Soft Aqua Glow
-    vec3 voidBlack = vec3(0.012, 0.027, 0.071);   // #030712
-    vec3 deepCobalt = vec3(0.08, 0.22, 0.72);    // #1438b8
-    vec3 electricCyan = vec3(0.0, 0.96, 1.0);     // #00F5FF
-    vec3 brightMint = vec3(0.65, 0.97, 0.92);     // #A7F7EB
-
-    vec3 color = voidBlack;
-
-    // Layered color blend based on noise field
-    color = mix(color, deepCobalt, clamp(f * f * 2.8, 0.0, 1.0));
-    color = mix(color, electricCyan, clamp(pow(r.x, 2.0) * 1.6, 0.0, 1.0));
-    color = mix(color, brightMint, clamp(pow(q.y, 3.0) * 1.8, 0.0, 1.0));
-
-    // Focal luminous core on the left/center as in reference video
-    float distFromCore = length(st - vec2(0.35 + mouseOffset.x * 0.4, 0.55 + mouseOffset.y * 0.4));
-    float vignette = smoothstep(1.35, 0.2, distFromCore);
-    color *= vignette * 1.15;
-
-    // Edge fading so content remains crisp and legible
-    float edgeDarkening = smoothstep(0.0, 0.25, vUv.y) * smoothstep(1.0, 0.75, vUv.y);
-    color *= (0.4 + 0.6 * edgeDarkening);
-
-    // Subtle film grain to eliminate 8-bit banding on dark gradients
-    float noise = (fract(sin(dot(gl_FragCoord.xy, vec2(12.9898,78.233))) * 43758.5453) - 0.5) * 0.025;
-    color += noise;
-
-    gl_FragColor = vec4(color, 1.0);
+      // 2. PATTERNS: DOT GRID ANIMADA (Distance: 24px, Dot size: 3px, Blend: Normal, Noise: Ridged ↓)
+      float spacing = 24.0;
+      vec2 gridPos = mod(fragCoord, spacing) - spacing * 0.5;
+      float dist = length(gridPos);
+      
+      float dotShape = 1.0 - smoothstep(1.1, 1.9, dist);
+      
+      // Coordenada com o movimento descendente (Direction: ↓, Speed: 69, Size: 450)
+      vec2 patternUv = fragCoord / 420.0;
+      patternUv.y += uTime * 0.24;
+      patternUv.x -= uTime * 0.04;
+      
+      float rawNoise = snoise(patternUv);
+      float ridged = 1.0 - abs(rawNoise);
+      ridged = pow(ridged, 1.6);
+      
+      float dotMask = smoothstep(0.12, 0.88, ridged);
+      float dotAlpha = dotShape * (0.06 + 0.82 * dotMask) * uDotIntensity;
+      
+      color = mix(color, vec3(1.0), dotAlpha);
+      color *= (1.0 - uDimming);
+      
+      gl_FragColor = vec4(color, 1.0);
   }
 `;
 
-export function HeroShaderBackground() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+interface FluidBackgroundProps {
+  dimming?: number;
+  dotIntensity?: number;
+}
+
+export function FluidBackground({
+  dimming = 0.05,
+  dotIntensity = 1.0,
+}: FluidBackgroundProps) {
+  const mountRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
-    const canvas = canvasRef.current;
-    if (!container || !canvas) return;
-
-    // Check for prefers-reduced-motion
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    // Renderer setup
-    let renderer: THREE.WebGLRenderer | null = null;
-    try {
-      renderer = new THREE.WebGLRenderer({
-        canvas,
-        powerPreference: "high-performance",
-        antialias: false,
-        alpha: false,
-      });
-    } catch {
-      // Graceful fallback if WebGL is unavailable
-      return;
-    }
-
-    const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-    renderer.setPixelRatio(dpr);
-
-    const width = container.clientWidth;
-    const height = container.clientHeight;
-    renderer.setSize(width, height);
+    const mount = mountRef.current;
+    if (!mount) return;
 
     const scene = new THREE.Scene();
     const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
 
+    let renderer: THREE.WebGLRenderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        alpha: false,
+        antialias: true,
+        powerPreference: "high-performance",
+      });
+    } catch {
+      return;
+    }
+
+    const width = mount.clientWidth || window.innerWidth;
+    const height = mount.clientHeight || window.innerHeight;
+    renderer.setSize(width, height);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    mount.appendChild(renderer.domElement);
+
     const uniforms = {
-      u_time: { value: 0 },
-      u_resolution: { value: new THREE.Vector2(width * dpr, height * dpr) },
-      u_mouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uTime: { value: 0 },
+      uResolution: { value: new THREE.Vector2(width, height) },
+      uMouse: { value: new THREE.Vector2(0.5, 0.5) },
+      uDimming: { value: dimming },
+      uDotIntensity: { value: dotIntensity },
+      uScroll: { value: 0 },
     };
 
     const geometry = new THREE.PlaneGeometry(2, 2);
@@ -161,96 +158,82 @@ export function HeroShaderBackground() {
     const mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    // Target mouse with spring/LERP smoothing
-    let targetMouseX = 0.5;
-    let targetMouseY = 0.5;
-    let currentMouseX = 0.5;
-    let currentMouseY = 0.5;
+    let animationFrameId: number | null = null;
+    const clock = new THREE.Clock();
+    const targetMouse = { x: 0.5, y: 0.5 };
+    let targetScroll = 0;
 
     const handlePointerMove = (e: PointerEvent) => {
-      const rect = container.getBoundingClientRect();
-      targetMouseX = (e.clientX - rect.left) / rect.width;
-      targetMouseY = 1.0 - (e.clientY - rect.top) / rect.height;
+      targetMouse.x = e.clientX / window.innerWidth;
+      targetMouse.y = 1.0 - e.clientY / window.innerHeight;
+    };
+
+    const handleScroll = () => {
+      const vh = Math.max(window.innerHeight, 1);
+      targetScroll = Math.min(Math.max(window.scrollY / vh, 0), 1.2);
+    };
+
+    const render = () => {
+      if (document.hidden) {
+        animationFrameId = null;
+        return;
+      }
+      uniforms.uTime.value = clock.getElapsedTime();
+      uniforms.uMouse.value.x += (targetMouse.x - uniforms.uMouse.value.x) * 0.05;
+      uniforms.uMouse.value.y += (targetMouse.y - uniforms.uMouse.value.y) * 0.05;
+      uniforms.uScroll.value += (targetScroll - uniforms.uScroll.value) * 0.08;
+      renderer.render(scene, camera);
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        clock.stop();
+        if (animationFrameId !== null) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      } else {
+        clock.start();
+        if (animationFrameId === null) {
+          animationFrameId = requestAnimationFrame(render);
+        }
+      }
     };
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    handleScroll();
+    render();
 
-    // Resize handler
     const handleResize = () => {
-      if (!container || !renderer) return;
-      const w = container.clientWidth;
-      const h = container.clientHeight;
-      renderer.setSize(w, h);
-      uniforms.u_resolution.value.set(w * dpr, h * dpr);
+      if (!mountRef.current) return;
+      const newW = mountRef.current.clientWidth || window.innerWidth;
+      const newH = mountRef.current.clientHeight || window.innerHeight;
+      renderer.setSize(newW, newH);
+      uniforms.uResolution.value.set(newW, newH);
     };
-
     window.addEventListener("resize", handleResize);
 
-    // IntersectionObserver to shut down GPU loop when offscreen
-    let isVisible = true;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          isVisible = entry.isIntersecting;
-        });
-      },
-      { threshold: 0.05 }
-    );
-    observer.observe(container);
-
-    let animationFrameId: number;
-    let lastTime = performance.now();
-
-    const animate = (currentTime: number) => {
-      animationFrameId = requestAnimationFrame(animate);
-
-      if (!isVisible || prefersReducedMotion) {
-        return;
-      }
-
-      const delta = (currentTime - lastTime) * 0.001;
-      lastTime = currentTime;
-
-      // Smooth mouse lerp
-      currentMouseX += (targetMouseX - currentMouseX) * 0.04;
-      currentMouseY += (targetMouseY - currentMouseY) * 0.04;
-
-      uniforms.u_time.value += delta;
-      uniforms.u_mouse.value.set(currentMouseX, currentMouseY);
-
-      renderer?.render(scene, camera);
-    };
-
-    // Render single initial frame
-    renderer.render(scene, camera);
-
-    if (!prefersReducedMotion) {
-      animationFrameId = requestAnimationFrame(animate);
-    }
-
     return () => {
-      cancelAnimationFrame(animationFrameId);
-      observer.disconnect();
-      window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (mount && renderer.domElement && mount.contains(renderer.domElement)) {
+        mount.removeChild(renderer.domElement);
+      }
       geometry.dispose();
       material.dispose();
-      renderer?.dispose();
+      renderer.dispose();
     };
-  }, []);
+  }, [dimming, dotIntensity]);
 
-  return (
-    <div
-      ref={containerRef}
-      className="absolute inset-0 w-full h-full overflow-hidden pointer-events-none select-none z-0"
-      aria-hidden="true"
-    >
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full block object-cover opacity-90 transition-opacity duration-700"
-      />
-      {/* Subtle vignette radial mask to guarantee text readability */}
-      <div className="absolute inset-0 bg-radial-gradient from-transparent via-transparent to-[#030712]/90 pointer-events-none" />
-    </div>
-  );
+  return <div ref={mountRef} className="w-full h-full" aria-hidden="true" />;
 }
+
+export const HeroShaderBackground = FluidBackground;

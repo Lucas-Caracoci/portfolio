@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { Command } from "cmdk";
-import confetti from "canvas-confetti";
 import {
   Code2,
   Terminal,
@@ -13,6 +12,8 @@ import {
   Check,
   Search,
   Sparkles,
+  Briefcase,
+  ShoppingBag,
 } from "lucide-react";
 import { GithubIcon } from "./icons/github";
 
@@ -39,24 +40,24 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
   const handleCopyEmail = () => {
     navigator.clipboard.writeText("lucascaracoci2@gmail.com");
     setCopied(true);
-    confetti({
-      particleCount: 35,
-      spread: 60,
-      origin: { y: 0.8 },
-      colors: ["#00F5FF", "#22D3EE", "#38BDF8"],
-    });
     setTimeout(() => {
       setCopied(false);
       onOpenChange(false);
-    }, 1200);
+    }, 900);
   };
 
   const scrollTo = (id: string) => {
     onOpenChange(false);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    window.dispatchEvent(
+      new CustomEvent("portfolio:scroll-to", { detail: { target: id } })
+    );
+  };
+
+  const selectProjectAndScroll = (projectId: "gide" | "concursos" | "meu-porto" | "pizzashop") => {
+    window.dispatchEvent(
+      new CustomEvent("portfolio:select-project", { detail: { projectId } })
+    );
+    scrollTo("case-studies");
   };
 
   if (!open) return null;
@@ -78,7 +79,7 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
             <Search className="w-5 h-5 text-cyan-400 shrink-0" />
             <Command.Input
               autoFocus
-              placeholder="Digite um comando ou busque projetos... (Ex: 'GIDE', 'Terminal', 'Email')"
+              placeholder="Digite um comando ou busque projetos... (Ex: 'GIDE', 'Carreira', 'Terminal')"
               className="w-full bg-transparent text-sm placeholder:text-slate-400 outline-none text-slate-100"
             />
             <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono text-slate-400 bg-slate-900 border border-slate-700 rounded">
@@ -117,7 +118,7 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
 
               <Command.Item
                 onSelect={() => {
-                  window.open("https://github.com/lucascaracoci", "_blank");
+                  window.open("https://github.com/Lucas-Caracoci", "_blank");
                   onOpenChange(false);
                 }}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
@@ -131,67 +132,89 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
             </Command.Group>
 
             <Command.Group
-              heading="Navegação em Sistemas & Casos de Estudo"
+              heading="Sistemas Selecionados (Abre a Aba Diretamente)"
               className="text-xs font-mono uppercase text-cyan-400/70 px-2 pt-3 pb-1"
             >
               <Command.Item
-                onSelect={() => scrollTo("case-studies")}
+                onSelect={() => selectProjectAndScroll("gide")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Layers className="w-4 h-4 text-cyan-400" />
-                  <span>GIDE (PMAC Starter Kit & Padrão Municipal)</span>
+                  <span>GIDE (Avaliação Institucional & Indicadores)</span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono">Laravel 12 + Inertia</span>
+                <span className="text-xs text-slate-400 font-mono">Laravel + Dexie.js</span>
               </Command.Item>
 
               <Command.Item
-                onSelect={() => scrollTo("case-studies")}
+                onSelect={() => selectProjectAndScroll("concursos")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Database className="w-4 h-4 text-cyan-400" />
-                  <span>Portal de Concursos (Pipeline ETL Criptografado)</span>
+                  <span>Portal de Concursos & Processos Seletivos</span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono">Python ETL + PostgreSQL</span>
+                <span className="text-xs text-slate-400 font-mono">PDF Engine + Postgres</span>
               </Command.Item>
 
               <Command.Item
-                onSelect={() => scrollTo("case-studies")}
+                onSelect={() => selectProjectAndScroll("meu-porto")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Sparkles className="w-4 h-4 text-cyan-400" />
-                  <span>Meu Porto (Plataforma Escolar & RBAC)</span>
+                  <span>Meu Porto (Mentoria Escolar, Fórum & Suporte)</span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono">PWA Offline-First</span>
+                <span className="text-xs text-slate-400 font-mono">TanStack Query + RBAC</span>
+              </Command.Item>
+
+              <Command.Item
+                onSelect={() => selectProjectAndScroll("pizzashop")}
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <ShoppingBag className="w-4 h-4 text-cyan-400" />
+                  <span>PizzaShop Web (Analytics & Operação)</span>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">React 19 + Zod</span>
               </Command.Item>
             </Command.Group>
 
             <Command.Group
-              heading="Playground & Terminal"
+              heading="Navegação por Seções"
               className="text-xs font-mono uppercase text-cyan-400/70 px-2 pt-3 pb-1"
             >
-              <Command.Item
-                onSelect={() => scrollTo("terminal")}
-                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Terminal className="w-4 h-4 text-emerald-400" />
-                  <span>Abrir Terminal Interativo</span>
-                </div>
-                <span className="text-xs text-slate-400 font-mono">CLI Hyprland</span>
-              </Command.Item>
-
               <Command.Item
                 onSelect={() => scrollTo("skills")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Code2 className="w-4 h-4 text-cyan-400" />
-                  <span>Ver Matriz de Arquitetura & Stack</span>
+                  <span>02 / Arquitetura & Domínios Técnicos</span>
                 </div>
                 <span className="text-xs text-slate-400 font-mono">PHP, React, Postgres</span>
+              </Command.Item>
+
+              <Command.Item
+                onSelect={() => scrollTo("experience")}
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Briefcase className="w-4 h-4 text-cyan-400" />
+                  <span>03 / Carreira & Experiência Profissional</span>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">2025 — Atualmente</span>
+              </Command.Item>
+
+              <Command.Item
+                onSelect={() => scrollTo("terminal")}
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Terminal className="w-4 h-4 text-emerald-400" />
+                  <span>04 / Abrir Terminal Interativo</span>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">CLI Interativo</span>
               </Command.Item>
             </Command.Group>
           </Command.List>

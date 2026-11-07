@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --background: #030712;
+  --background: #020203;
   --foreground: #f1f5f9;
   --cyan-core: #00f5ff;
   --cyan-glow: #22d3ee;
   --cobalt-deep: #1d4ed8;
-  --void-black: #030712;
+  --void-black: #020203;
 }
 
 @theme inline {
@@ -24,19 +24,17 @@
 }
 
 html {
-  background-color: #030712;
+  background-color: #020203;
   color: #f1f5f9;
   color-scheme: dark;
-  scroll-behavior: auto; /* Handled smoothly by Lenis */
+  scroll-behavior: smooth;
 }
 
 body {
-  background-color: #030712;
+  background-color: #020203;
   color: #f1f5f9;
   font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
   overflow-x: hidden;
-  selection-background-color: rgba(0, 245, 255, 0.25);
-  selection-color: #ffffff;
 }
 
 ::selection {
@@ -44,18 +42,18 @@ body {
   color: #ffffff;
 }
 
-/* Dot Matrix Grid Layer */
-.bg-dot-matrix {
-  background-image: radial-gradient(rgba(34, 211, 238, 0.22) 1.2px, transparent 1.2px);
-  background-size: 28px 28px;
+/* Accessible keyboard focus ring (Rule B9) */
+:focus-visible {
+  outline: 2px solid #00f5ff;
+  outline-offset: 2px;
 }
 
-/* Glassmorphism obsidian surfaces */
+/* Glassmorphism obsidian surfaces over the WebGL dot grid */
 .glass-panel {
-  background: rgba(8, 12, 24, 0.65);
+  background: rgba(4, 6, 12, 0.72);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(34, 211, 238, 0.12);
+  border: 1px solid rgba(34, 211, 238, 0.14);
 }
 
 .glass-panel-hover {
@@ -63,9 +61,9 @@ body {
 }
 
 .glass-panel-hover:hover {
-  background: rgba(12, 18, 36, 0.85);
-  border-color: rgba(34, 211, 238, 0.35);
-  box-shadow: 0 0 25px -5px rgba(0, 245, 255, 0.15);
+  background: rgba(8, 13, 26, 0.88);
+  border-color: rgba(34, 211, 238, 0.38);
+  box-shadow: 0 0 25px -5px rgba(0, 245, 255, 0.18);
 }
 
 /* Custom minimal scrollbar */
@@ -74,7 +72,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #030712;
+  background: #020203;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -84,16 +82,4 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #0284c7;
-}
-
-/* Respect reduced motion globally */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  ::before,
-  ::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
 }
