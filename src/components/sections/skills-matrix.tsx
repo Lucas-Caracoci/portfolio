@@ -8,61 +8,58 @@ export function SkillsMatrixSection() {
   const domains = [
     {
       index: "01",
-      title: "Backend & Engenharia de Sistemas",
-      summary: "Monólitos modulares desacoplados, motores de documentos e pipelines de dados.",
+      title: "Backend",
+      summary: "Regras de negócio & motores de processamento.",
       tags: [
         "PHP & Laravel",
-        "Service Pattern & DTOs",
-        "Python ETL",
-        "PDF Headless Engine",
-        "SSO & OAuth2",
-        "RBAC Granular",
+        "Service Pattern",
+        "Python (ETL)",
+        "PDF Headless",
+        "SSO & RBAC",
       ],
     },
     {
       index: "02",
-      title: "Frontend & Design Engineering",
-      summary: "Interfaces reativas de alta precisão, sincronização local e gráficos interativos.",
+      title: "Frontend",
+      summary: "Interfaces fluidas, reatividade e sincronização offline.",
       tags: [
-        "React 19 & Next.js",
-        "Inertia.js",
+        "React 19",
+        "Next.js",
         "TypeScript",
+        "Inertia.js",
         "Tailwind CSS v4",
         "Dexie.js (IndexedDB)",
-        "TanStack Query",
-        "Three.js & GLSL",
+        "Three.js & GSAP",
       ],
     },
     {
       index: "03",
-      title: "Cloud Computing, Dados & Infra",
-      summary: "Persistência relacional consistente, filas supervisionadas e conteinerização.",
+      title: "Dados & Cloud",
+      summary: "Persistência consistente, filas e infraestrutura.",
       tags: [
-        "PostgreSQL & MySQL",
-        "Docker & Compose",
+        "PostgreSQL",
         "Redis & Horizon",
-        "Cloud Architecture",
-        "Transações ACID",
-        "Backups Automatizados",
+        "Docker & Compose",
+        "Cloud Computing",
+        "Linux",
       ],
     },
     {
       index: "04",
-      title: "Qualidade, Segurança & DX",
-      summary: "Contratos tipados de ponta a ponta, suítes de teste e análise estática.",
+      title: "Qualidade",
+      summary: "Testes automatizados, contratos e análise estática.",
       tags: [
         "PHPUnit",
         "Zod & React Hook Form",
         "Análise Estática",
-        "Trilhas de Auditoria",
-        "Laravel Pint & ESLint",
-        "Git Flow",
+        "ESLint & Pint",
+        "Git",
       ],
     },
   ];
 
   return (
-    <section id="skills" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
+    <section id="stack" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 14 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -71,10 +68,10 @@ export function SkillsMatrixSection() {
         className="mb-12"
       >
         <div className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
-          02 / ARQUITETURA & DOMÍNIOS
+          02 / ARQUITETURA & FERRAMENTAS
         </div>
         <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-slate-100 text-balance">
-          Especificações técnicas.
+          Stack principal.
         </h2>
       </motion.div>
 

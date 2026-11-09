@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Command } from "cmdk";
 import {
   Code2,
-  Terminal,
   Database,
   Layers,
   Copy,
@@ -57,7 +56,7 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
     window.dispatchEvent(
       new CustomEvent("portfolio:select-project", { detail: { projectId } })
     );
-    scrollTo("case-studies");
+    scrollTo("projects");
   };
 
   if (!open) return null;
@@ -185,36 +184,47 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
               className="text-xs font-mono uppercase text-cyan-400/70 px-2 pt-3 pb-1"
             >
               <Command.Item
-                onSelect={() => scrollTo("skills")}
+                onSelect={() => scrollTo("projects")}
+                className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
+              >
+                <div className="flex items-center gap-2.5">
+                  <Layers className="w-4 h-4 text-cyan-400" />
+                  <span>01 / Projetos em Destaque</span>
+                </div>
+                <span className="text-xs text-slate-400 font-mono">GIDE, Concursos, Porto</span>
+              </Command.Item>
+
+              <Command.Item
+                onSelect={() => scrollTo("stack")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Code2 className="w-4 h-4 text-cyan-400" />
-                  <span>02 / Arquitetura & Domínios Técnicos</span>
+                  <span>02 / Stack Principal</span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono">PHP, React, Postgres</span>
+                <span className="text-xs text-slate-400 font-mono">Laravel, React, Postgres</span>
               </Command.Item>
 
               <Command.Item
-                onSelect={() => scrollTo("experience")}
+                onSelect={() => scrollTo("career")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
                   <Briefcase className="w-4 h-4 text-cyan-400" />
-                  <span>03 / Carreira & Experiência Profissional</span>
+                  <span>03 / Trajetória Técnica</span>
                 </div>
                 <span className="text-xs text-slate-400 font-mono">2025 — Atualmente</span>
               </Command.Item>
 
               <Command.Item
-                onSelect={() => scrollTo("terminal")}
+                onSelect={() => scrollTo("contact")}
                 className="flex items-center justify-between px-3 py-2.5 rounded-lg text-sm cursor-pointer select-none text-slate-200 hover:bg-cyan-500/15 hover:text-cyan-300 transition-colors"
               >
                 <div className="flex items-center gap-2.5">
-                  <Terminal className="w-4 h-4 text-emerald-400" />
-                  <span>04 / Abrir Terminal Interativo</span>
+                  <ExternalLink className="w-4 h-4 text-cyan-400" />
+                  <span>04 / Contato Direto</span>
                 </div>
-                <span className="text-xs text-slate-400 font-mono">CLI Interativo</span>
+                <span className="text-xs text-slate-400 font-mono">E-mail & Redes</span>
               </Command.Item>
             </Command.Group>
           </Command.List>

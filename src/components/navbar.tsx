@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Terminal, Command as CommandIcon, Menu, X } from "lucide-react";
+import { Command as CommandIcon, Menu, X } from "lucide-react";
 import { GithubIcon } from "./icons/github";
 
 interface NavbarProps {
@@ -10,10 +10,9 @@ interface NavbarProps {
 }
 
 const navLinks = [
-  { id: "case-studies", label: "Projetos" },
-  { id: "skills", label: "Arquitetura" },
-  { id: "experience", label: "Carreira" },
-  { id: "terminal", label: "Terminal", hasIcon: true },
+  { id: "projects", label: "Projetos" },
+  { id: "stack", label: "Stack" },
+  { id: "career", label: "Trajetória" },
   { id: "contact", label: "Contato" },
 ] as const;
 
@@ -100,7 +99,7 @@ export function Navbar({ onOpenCommand }: NavbarProps) {
 
           <div className="hidden xl:flex items-center gap-1.5 pl-3 border-l border-slate-800 text-xs font-mono text-slate-400">
             <span className="text-emerald-400">●</span>
-            <span>Disponível para Arquitetura & Projetos</span>
+            <span>Disponível para projetos • Arraial do Cabo, RJ</span>
           </div>
         </div>
 
@@ -128,9 +127,6 @@ export function Navbar({ onOpenCommand }: NavbarProps) {
                     transition={{ type: "spring", stiffness: 460, damping: 34, mass: 0.7 }}
                     className="absolute inset-0 rounded-full bg-white/[0.08] border border-cyan-400/25 -z-10"
                   />
-                )}
-                {"hasIcon" in item && item.hasIcon && (
-                  <Terminal className="w-3.5 h-3.5 text-cyan-400" />
                 )}
                 <span>{item.label}</span>
               </button>

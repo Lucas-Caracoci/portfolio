@@ -19,13 +19,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Lucas Caracoci — Arquiteto de Software & Engenheiro Full-Stack",
+  title: "Lucas Caracoci — Engenheiro de Software Full-Stack",
   description:
-    "Portfólio de engenharia de Lucas Caracoci. Especialista em monólitos modulares (Laravel / React / Inertia), arquitetura Cloud, pipelines de dados e interfaces de precisão cirúrgica.",
+    "Engenheiro de Software Full-Stack. Sistemas web rápidos, seguros e prontos para produção com Laravel, React, Next.js e PostgreSQL.",
   keywords: [
     "Lucas Caracoci",
     "Engenheiro de Software",
-    "Arquiteto de Software",
+    "Full-Stack",
     "Laravel",
     "React",
     "Next.js",
@@ -36,9 +36,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "Lucas Caracoci", url: "https://github.com/Lucas-Caracoci" }],
   openGraph: {
-    title: "Lucas Caracoci — Arquiteto de Software & Engenheiro Full-Stack",
+    title: "Lucas Caracoci — Engenheiro de Software Full-Stack",
     description:
-      "Engenharia de alta confiabilidade e interfaces de precisão cirúrgica. Monólitos modulares, pipelines ETL e design engineering.",
+      "Sistemas web rápidos, seguros e prontos para produção com Laravel, React, Next.js e PostgreSQL.",
     type: "website",
     locale: "pt_BR",
   },

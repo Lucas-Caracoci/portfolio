@@ -19,34 +19,32 @@ interface ExperienceItem {
 const experiences: ExperienceItem[] = [
   {
     id: "dev-fullstack",
-    period: "ABRIL 2026 — ATUALMENTE",
+    period: "Abril 2026 — Atualmente",
     role: "Desenvolvedor Full-Stack",
     organization: "@Prefeitura Municipal",
     icon: Code2,
     isCurrent: true,
     bullets: [
-      "Desenvolvimento e evolução de sistemas institucionais em produção (avaliação educacional multidimensional, portal de certames públicos e ecossistema escolar) utilizando PHP/Laravel, React, TypeScript e Inertia.js sob arquitetura desacoplada (Service Pattern);",
-      "Engenharia de coleta Offline-First com persistência local no navegador via IndexedDB (Dexie.js), emissão de vouchers anônimos de uso único (QR Code / OTP) e motores de cálculo dinâmico de metas;",
-      "Automação de pipelines de ingestão e saneamento de dados legados com Python (ETL), migração relacional íntegra para PostgreSQL e unificação automatizada de PDFs via microserviço Chromium Headless;",
-      "Implantação e operação de ambientes conteinerizados com Docker, processamento de filas assíncronas com Redis e Laravel Horizon, controle de acesso granular (RBAC) e conformidade com a LGPD;",
+      "Desenvolvimento de sistemas web em produção com Laravel, React, TypeScript e Inertia.js.",
+      "Sincronização offline via IndexedDB (Dexie.js), vouchers QR Code e motores de cálculo.",
+      "Migração de dados legados com Python para PostgreSQL e geração de PDFs em Docker.",
     ],
     technologies:
-      "PHP, Laravel, React 19, TypeScript, Inertia.js, PostgreSQL, Redis, Docker, Python (ETL), Dexie.js, Tailwind CSS, Git, dentre outras.",
+      "Laravel, React 19, TypeScript, Inertia.js, PostgreSQL, Docker, Dexie.js, Redis.",
   },
   {
     id: "ti-infra",
-    period: "ABRIL 2025 — ABRIL 2026",
+    period: "Abril 2025 — Abril 2026",
     role: "Analista de TI & Infraestrutura",
     organization: "@Prefeitura Municipal",
     icon: Server,
     bullets: [
-      "Sustentação da infraestrutura tecnológica institucional, administração de redes, ambientes operacionais e suporte técnico especializado às unidades e sistemas públicos;",
-      "Diagnóstico e resolução de incidentes críticos de conectividade, hardware e sistemas, assegurando alta disponibilidade na operação diária;",
-      "Apoio técnico na implantação de sistemas web nas unidades, levantamento de requisitos operacionais em campo e transição direta para a equipe de Engenharia e Desenvolvimento de Software;",
-      "Padronização de estações de trabalho, políticas de segurança da informação e proteção de dados em conformidade com a LGPD;",
+      "Administração de redes, infraestrutura de TI e suporte crítico às unidades.",
+      "Implantação de sistemas internos, padronização de segurança e adequação à LGPD.",
+      "Mapeamento técnico em campo e transição para a equipe de Desenvolvimento.",
     ],
     technologies:
-      "Infraestrutura de TI, Redes & Conectividade, Linux, Windows, Diagnóstico de Sistemas, Segurança da Informação, Suporte Crítico e Automação.",
+      "Infraestrutura de TI, Redes, Linux, Diagnóstico de Sistemas, Segurança da Informação.",
   },
 ];
 
@@ -83,7 +81,7 @@ function CircuitBulletIcon() {
 
 export function ExperienceTimelineSection() {
   return (
-    <section id="experience" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
+    <section id="career" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
       {/* Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
@@ -93,12 +91,12 @@ export function ExperienceTimelineSection() {
         className="mb-14"
       >
         <div className="inline-flex items-center px-3 py-1 rounded-md border border-cyan-500/30 bg-cyan-950/20 text-xs font-mono uppercase tracking-widest text-cyan-400 mb-4">
-          [ 03 ] CARREIRA
+          03 / EXPERIÊNCIA PROFISSIONAL
         </div>
 
         <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-slate-100 leading-tight text-balance">
-          Experiência
-          <span className="block text-cyan-400">profissional.</span>
+          Trajetória
+          <span className="block text-cyan-400">técnica.</span>
         </h2>
       </motion.div>
 

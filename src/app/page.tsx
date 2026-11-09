@@ -9,7 +9,6 @@ import { HeroSection } from "@/components/sections/hero";
 import { CaseStudiesSection } from "@/components/sections/case-studies";
 import { SkillsMatrixSection } from "@/components/sections/skills-matrix";
 import { ExperienceTimelineSection } from "@/components/sections/experience-timeline";
-import { SystemTerminal } from "@/components/sections/system-terminal";
 import { ContactFooter } from "@/components/sections/contact-footer";
 
 export default function HomePage() {
@@ -18,7 +17,7 @@ export default function HomePage() {
   return (
     <SmoothScroll>
       <div className="relative min-h-screen bg-[#020203] text-slate-100 flex flex-col">
-        {/* Skip to Content link for Keyboard Accessibility (Rule B10) */}
+        {/* Skip to Content link for Keyboard Accessibility */}
         <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-xl focus:bg-cyan-400 focus:text-slate-950 focus:font-mono focus:text-xs focus:font-semibold"
@@ -40,25 +39,22 @@ export default function HomePage() {
           onOpenChange={setCommandMenuOpen}
         />
 
-        {/* Page Content Flow — Ordered by Hierarchy of Importance */}
+        {/* Page Content Flow — Harmonized with v4 Hierarchy */}
         <main id="main-content" className="relative z-10 flex-1 w-full">
           {/* 00. Hero over the Fluid Kura Gradient */}
           <HeroSection />
 
-          {/* 01. Selected Production Systems (GIDE, Concursos, Meu Porto, PizzaShop) */}
+          {/* 01. Selected Production Systems (#projects) */}
           <CaseStudiesSection />
 
-          {/* 02. Architecture & Technical Domains Index */}
+          {/* 02. Core Technical Stack (#stack) */}
           <SkillsMatrixSection />
 
-          {/* 03. Professional Experience & Career Timeline */}
+          {/* 03. Professional Career Progression (#career) */}
           <ExperienceTimelineSection />
-
-          {/* 04. Interactive System Terminal Playground */}
-          <SystemTerminal />
         </main>
 
-        {/* 05. Tactile Footer & Direct Contact */}
+        {/* 04. Tactile Horizon Contact Footer (#contact) */}
         <ContactFooter />
       </div>
     </SmoothScroll>

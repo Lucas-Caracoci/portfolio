@@ -44,17 +44,15 @@ export function ContactFooter() {
 
           <div className="relative z-10 max-w-2xl">
             <div className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
-              05 / CONTATO DIRETO
+              04 / CONTATO DIRETO
             </div>
 
             <h2 className="text-3xl sm:text-4xl font-bold tracking-tight text-slate-100 text-balance mb-4">
-              Disponível para novos projetos de software & consultoria de arquitetura.
+              Vamos construir seu próximo sistema?
             </h2>
 
             <p className="text-sm text-slate-300 font-sans leading-relaxed text-pretty mb-8">
-              Seja para estruturar uma nova aplicação em monólito modular, migrar infraestruturas
-              legadas ou construir interfaces com o mais alto acabamento visual, entre em contato
-              direto.
+              Disponível para novos projetos, arquitetura de software e desenvolvimento Full-Stack.
             </p>
 
             {/* Email Copy Box */}
@@ -83,7 +81,7 @@ export function ContactFooter() {
                       className="flex items-center gap-2"
                     >
                       <Check className="w-4 h-4 text-emerald-950" />
-                      <span>E-mail Copiado</span>
+                      <span>E-mail copiado!</span>
                     </motion.span>
                   ) : (
                     <motion.span
@@ -99,7 +97,7 @@ export function ContactFooter() {
                       className="flex items-center gap-2"
                     >
                       <Copy className="w-4 h-4 text-slate-950" />
-                      <span>Copiar Endereço</span>
+                      <span>Copiar e-mail</span>
                     </motion.span>
                   )}
                 </AnimatePresence>
@@ -113,11 +111,11 @@ export function ContactFooter() {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5 text-slate-300">
               <MapPin className="w-3.5 h-3.5 text-cyan-400" />
-              <span>Arraial do Cabo RJ, Brasil</span>
+              <span>Arraial do Cabo, RJ</span>
             </div>
             <div className="flex items-center gap-1.5 text-slate-400">
               <Clock className="w-3.5 h-3.5 text-slate-500" />
-              <span>{time || "UTC-3"}</span>
+              <span>{time ? `${time} (BRT)` : "BRT"}</span>
             </div>
           </div>
 
@@ -126,14 +124,13 @@ export function ContactFooter() {
               href="https://github.com/Lucas-Caracoci"
               target="_blank"
               rel="noopener noreferrer"
-              className="group flex items-center gap-1.5 text-slate-300 hover:text-cyan-400 transition-colors"
+              className="inline-flex items-center gap-1.5 text-slate-300 hover:text-cyan-400 transition-colors"
             >
               <GithubIcon className="w-4 h-4" />
               <span>GitHub</span>
-              <ArrowUpRight className="w-3 h-3 text-slate-500 transition-transform duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
-
-            <span>© {year ?? "2026"} Lucas Caracoci</span>
+            <span>© {year || 2026} Lucas Caracoci</span>
           </div>
         </div>
       </div>

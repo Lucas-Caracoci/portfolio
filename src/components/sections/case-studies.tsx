@@ -37,96 +37,96 @@ interface CaseStudy {
 const projects: CaseStudy[] = [
   {
     id: "gide",
-    category: "Avaliação Institucional & Indicadores",
+    category: "Educação & Indicadores",
     title: "GIDE",
     summary:
-      "Plataforma de avaliação multidimensional para redes de ensino com controle de quórum em tempo real, votação anônima por QR Code e apuração automatizada de metas.",
+      "Avaliação educacional em rede com votação anônima por QR Code e funcionamento offline.",
     highlights: [
       {
-        label: "Coleta Offline-First",
-        detail: "Persistência local via IndexedDB (Dexie.js) para unidades sem conexão estável.",
+        label: "Coleta Offline",
+        detail: "Persistência local sem internet via IndexedDB (Dexie.js).",
       },
       {
-        label: "Vouchers QR/OTP",
-        detail: "Emissão em lote de códigos de uso único com trava automática de cota por segmento.",
+        label: "Vouchers QR",
+        detail: "Emissão de códigos de uso único com trava automática por segmento.",
       },
       {
-        label: "Motor Ponderado",
-        detail: "Cálculo dinâmico de notas com recálculo automático para itens não aplicáveis.",
+        label: "Metas Ponderadas",
+        detail: "Apuração automática e recálculo dinâmico de notas.",
       },
     ],
-    techStack: ["Laravel", "React & TypeScript", "Inertia.js", "Dexie.js", "Recharts"],
+    techStack: ["Laravel", "React", "TypeScript", "Inertia.js", "Dexie.js"],
     provenanceLabel: "Sistema em Produção • Repositório Privado",
   },
   {
     id: "concursos",
-    category: "Transparência Pública & Document Engine",
+    category: "Gestão Documental",
     title: "Portal de Concursos",
     summary:
-      "Sistema de gestão e publicação de certames, editais e cronogramas com motor dedicado de unificação de PDFs e migração de acervo histórico.",
+      "Publicação de certames e editais com fusão automatizada de PDFs e acervo histórico migrado.",
     highlights: [
       {
-        label: "Fusão de PDFs Headless",
-        detail: "Geração de dossiês e unificação de anexos via microserviço Chromium isolado.",
+        label: "Fusão Headless",
+        detail: "Unificação de anexos via microserviço Chromium Headless.",
       },
       {
-        label: "Proteção & Auditoria",
-        detail: "Ofuscação de identificadores públicos em rotas de download e trilha de auditoria.",
+        label: "Migração Íntegra",
+        detail: "Mais de 300 editais históricos migrados e estruturados no PostgreSQL.",
       },
       {
-        label: "Ingestão de Acervo",
-        detail: "Pipeline automatizado que estruturou mais de 300 editais históricos no PostgreSQL.",
+        label: "Rotas Protegidas",
+        detail: "Identificadores protegidos em rotas públicas com auditoria.",
       },
     ],
-    techStack: ["Laravel", "React & TypeScript", "PostgreSQL", "PDF Headless", "Laravel Horizon"],
+    techStack: ["Laravel", "React", "PostgreSQL", "PDF Headless", "Horizon"],
     provenanceLabel: "Sistema em Produção • Repositório Privado",
   },
   {
     id: "meu-porto",
-    category: "Ecossistema Escolar & Mentoria",
+    category: "Comunidade Escolar",
     title: "Meu Porto",
     summary:
-      "Plataforma de comunidade estudantil integrando programa de mentoria por afinidade, fórum acadêmico moderado, suporte por protocolo e mural para TV.",
+      "Plataforma estudantil com mentoria entre alunos por afinidade, fórum moderado e suporte.",
     highlights: [
       {
-        label: "Pareamento por Afinidade",
-        detail: "Formação de duplas de mentoria cruzando catálogo de interesses dos estudantes.",
+        label: "Mentoria por Afinidade",
+        detail: "Pareamento automático cruzando catálogo de interesses dos alunos.",
       },
       {
         label: "Suporte Protocolado",
-        detail: "Atendimento assíncrono segmentado entre coordenação pedagógica e suporte técnico.",
+        detail: "Atendimento interno assíncrono segmentado por protocolo.",
       },
       {
-        label: "Pipeline de Mídia Mobile",
-        detail: "Conversão automática de fotos HEIC no navegador e compressão inteligente.",
+        label: "Pipeline HEIC",
+        detail: "Conversão automática de fotos HEIC para JPEG no navegador.",
       },
     ],
-    techStack: ["Laravel", "Inertia.js", "TanStack Query", "React Hook Form", "Zod"],
+    techStack: ["Laravel", "Inertia.js", "TanStack Query", "Zod", "Tailwind"],
     provenanceLabel: "Sistema em Produção • Repositório Privado",
   },
   {
     id: "pizzashop",
-    category: "Frontend Architecture & Analytics",
+    category: "Operação & Analytics",
     title: "PizzaShop Web",
     summary:
-      "Dashboard analítico e operacional para gestão de pedidos e métricas de restaurantes, construído com validação tipada e primitivos acessíveis.",
+      "Painel de pedidos e métricas para restaurantes com atualização instantânea de status.",
     highlights: [
       {
-        label: "Filtros & Mutação Rápida",
-        detail: "Atualização de status de pedidos com feedback imediato e zero latência visual.",
+        label: "Mutação Otimista",
+        detail: "Atualização imediata de status de pedidos sem tempo de espera.",
       },
       {
-        label: "Contratos com Zod",
-        detail: "Formulários validados de ponta a ponta com React Hook Form e TypeScript estrito.",
+        label: "Contratos Tipados",
+        detail: "Formulários validados de ponta a ponta com React Hook Form + Zod.",
       },
       {
-        label: "UI Acessível por Teclado",
-        detail: "Modais, tabelas e menus construídos sobre Radix UI e Tailwind CSS v4.",
+        label: "Acessibilidade Total",
+        detail: "Componentes 100% acessíveis por teclado construídos sobre Radix UI.",
       },
     ],
-    techStack: ["React 19", "TypeScript", "Vite", "Tailwind CSS v4", "Radix UI"],
+    techStack: ["React 19", "TypeScript", "Vite", "Tailwind v4", "Radix UI"],
     repoUrl: "https://github.com/Lucas-Caracoci/pizzashop",
-    provenanceLabel: "Ver Repositório no GitHub",
+    provenanceLabel: "Repositório no GitHub",
   },
 ];
 
@@ -458,7 +458,7 @@ export function CaseStudiesSection() {
   }, []);
 
   return (
-    <section id="case-studies" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
+    <section id="projects" className="relative z-20 py-24 px-4 max-w-6xl mx-auto">
       {/* Editorial Section Header */}
       <motion.div
         initial={{ opacity: 0, y: 14 }}
@@ -469,10 +469,10 @@ export function CaseStudiesSection() {
       >
         <div>
           <div className="text-xs font-mono uppercase tracking-widest text-cyan-400 mb-3">
-            01 / SISTEMAS SELECIONADOS
+            01 / SISTEMAS EM PRODUÇÃO
           </div>
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-slate-100 text-balance">
-            Projetos em produção.
+            Projetos em destaque.
           </h2>
         </div>
 
