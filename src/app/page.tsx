@@ -1,71 +1,107 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useState } from "react";
 import { SmoothScroll } from "@/components/providers/smooth-scroll";
 import { CommandMenu } from "@/components/command-menu";
-import { SwissNavbar } from "@/components/v2/swiss-navbar";
-import { HeroMagneticKinetic } from "@/components/v2/hero-magnetic-kinetic";
-import { HeroKinetic } from "@/components/v2/hero-kinetic";
-import { HorizontalProjectsPin } from "@/components/v2/horizontal-projects-pin";
-import { SwissStackIndex } from "@/components/v2/swiss-stack-index";
-import { SwissCareer } from "@/components/v2/swiss-career";
-import { SwissFooter } from "@/components/v2/swiss-footer";
-import { MotionLabPill, type HeroVariant } from "@/components/v2/motion-lab-pill";
+import Grainient from "@/components/react-bits/Grainient";
+import { TechMeshOverlay } from "@/components/react-bits/TechMeshOverlay";
+import { ScrollVelocityStrip } from "@/components/react-bits/ScrollVelocityStrip";
+import { ClickSpark } from "@/components/react-bits/ui-effects";
+import { RbNavbar } from "@/components/v5/rb-navbar";
+import { RbBranchedSidebar } from "@/components/v5/rb-branched-sidebar";
+import { RbHero } from "@/components/v5/rb-hero";
+import { RbAbout } from "@/components/v5/rb-about";
+import { RbProjects } from "@/components/v5/rb-projects";
+import { RbTaglineReveal } from "@/components/v5/rb-tagline-reveal";
+import { RbCareer } from "@/components/v5/rb-career";
+import { RbFooter } from "@/components/v5/rb-footer";
 
 export default function HomePage() {
   const [commandMenuOpen, setCommandMenuOpen] = useState(false);
-  const [heroVariant, setHeroVariant] = useState<HeroVariant>("style3");
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => {
-      ScrollTrigger.refresh();
-    });
-    return () => cancelAnimationFrame(id);
-  }, [heroVariant]);
 
   return (
     <SmoothScroll>
-      <div className="relative min-h-screen bg-[#F4F1EA] text-[#111111] flex flex-col">
-        {/* Skip to Content link for Keyboard Accessibility */}
+      <div className="relative min-h-screen text-[#fff7ed] flex flex-col isolate">
+        {/* Skip to Content link for Keyboard Accessibility (Rule B10) */}
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:rounded-xl focus:bg-[#FF3B00] focus:text-white focus:font-mono focus:text-xs focus:font-semibold"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-3 focus:py-2 focus:rounded-lg focus:bg-[#f97316] focus:text-[#120f17] focus:font-mono focus:text-xs focus:font-semibold"
         >
           Pular para o conteúdo principal
         </a>
 
-        {/* Floating Swiss Navigation Bar */}
-        <SwissNavbar onOpenCommand={() => setCommandMenuOpen(true)} />
+        {/* Unified Continuous Grainient Shader Background (Remains vibrant & energetic) */}
+        <div className="fixed inset-0 z-0 pointer-events-none">
+          <Grainient
+            colors={["#120f17", "#2a0f0a", "#9a3412", "#f97316", "#fed7aa"]}
+            scrollColors={[
+              "#100c14",
+              "#240d08",
+              "#7c2d12",
+              "#ea580c",
+              "#fed7aa",
+            ]}
+            scrollFlowScale={0.85}
+            type="linear"
+            angle={55}
+            bands={1}
+            softness={1}
+            flow={0.8}
+            scale={1}
+            speed={1}
+            silk={0.35}
+            grainAmount={0.08}
+            grainSize={1.2}
+            grainAnimated={true}
+            contrast={1}
+            saturation={1}
+            interactive={true}
+            stir={1}
+            clickSwirl={true}
+            intro={true}
+          />
+        </div>
 
-        {/* Command Menu (⌘K) in Swiss Kinetic Light Theme */}
-        <CommandMenu
-          open={commandMenuOpen}
-          onOpenChange={setCommandMenuOpen}
-        />
+        {/* Scroll-Blended Magnetic Tech Mesh & Constellation Overlay (0% in Hero -> 100% in Body) */}
+        <TechMeshOverlay />
 
-        {/* Live Switcher to compare Hero Style 3 (Kinetic & Magnetic) vs Hero Style 1 (3D Sculpture) */}
-        <MotionLabPill
-          heroVariant={heroVariant}
-          onChangeHero={setHeroVariant}
-        />
+        {/* React Bits ClickSpark Geometric Feedback Overlay */}
+        <ClickSpark enabled={true} />
 
+        {/* Floating PillNav Navigation Bar (React Bits PillNav) */}
+        <RbNavbar onOpenCommand={() => setCommandMenuOpen(true)} />
+
+        {/* Left Fixed Branched Menu (React Bits BranchedMenu) */}
+        <RbBranchedSidebar />
+
+        {/* Instantaneous Command Menu (⌘K) */}
+        <CommandMenu open={commandMenuOpen} onOpenChange={setCommandMenuOpen} />
+
+        {/* Main Content Structure */}
         <main id="main-content" className="relative z-10 flex-1 w-full">
-          {/* 01. Hero Section (Defaults to Style 3: Kinetic Typography + Draggable/Magnetic Spring Modules) */}
-          {heroVariant === "style3" ? <HeroMagneticKinetic /> : <HeroKinetic />}
+          {/* 01. Hero Section (TechText + Subtitle over continuous Grainient) */}
+          <RbHero />
 
-          {/* 02. Projetos Selecionados: Tipografia Cinética Gigante + Horizontal Pin + Cards Magnéticos */}
-          <HorizontalProjectsPin />
+          {/* Kinetic ScrollVelocity & Stack LogoLoop Strip */}
+          <ScrollVelocityStrip />
 
-          {/* 03. Caixa de Ferramentas & Stack em 1ª Pessoa */}
-          <SwissStackIndex />
+          {/* 02. About Me Section (Text Left + 3D Lanyard Right) */}
+          <RbAbout />
 
-          {/* 04. Trajetória Profissional Real (2025 TI → 2026 Dev Full-Stack) */}
-          <SwissCareer />
+          {/* 03. Case Studies & How It Works (SpotlightCard, TiltedCard, Magnetic Tabs) */}
+          <RbProjects magnetEnabled={true} />
+
+          {/* 04. Mandatory Tagline Reveal Section (Rule B11 ScrollReveal word-by-word) */}
+          <RbTaglineReveal />
+
+          {/* 05. Career Proof & Trajectory (SpotlightCard, DecryptedText) */}
+          <RbCareer />
         </main>
 
-        {/* 05. Rodapé Editorial Vermilion & Carbono */}
-        <SwissFooter />
+        {/* 06. Final CTA, Validated Contact Form & Legal Footer */}
+        <div className="relative z-10">
+          <RbFooter magnetEnabled={true} />
+        </div>
       </div>
     </SmoothScroll>
   );

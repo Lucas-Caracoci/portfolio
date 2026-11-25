@@ -2,16 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { Command } from "cmdk";
+import type { ProjectId } from "@/components/v5/rb-projects";
 import {
-  Code2,
-  Copy,
-  ExternalLink,
-  Check,
-  Search,
-  Sparkles,
-  Briefcase,
-  Layers,
-} from "lucide-react";
+  SolarSearch,
+  SolarSparkles,
+  SolarLayers,
+  SolarCopy,
+  SolarCheck,
+  SolarArrowUpRight,
+} from "@/components/react-bits/icons";
 import { GithubIcon } from "./icons/github";
 
 interface CommandMenuProps {
@@ -40,7 +39,7 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
     setTimeout(() => {
       setCopied(false);
       onOpenChange(false);
-    }, 900);
+    }, 800);
   };
 
   const scrollTo = (id: string) => {
@@ -50,108 +49,159 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
     );
   };
 
+  const selectProject = (projectId: ProjectId) => {
+    onOpenChange(false);
+    window.dispatchEvent(
+      new CustomEvent("portfolio:select-project", { detail: { projectId } })
+    );
+    window.dispatchEvent(
+      new CustomEvent("portfolio:scroll-to", { detail: { target: "projects" } })
+    );
+  };
+
+  // Instantaneous render with zero entrance animation delay per Emil Kowalski Rule #1
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#141413]/70 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#08060b]/80 backdrop-blur-md">
       <div
         className="fixed inset-0"
         onClick={() => onOpenChange(false)}
         aria-hidden="true"
       />
-      <div className="relative w-full max-w-xl bg-[#F4F1EA] rounded-2xl border border-[#111111]/20 shadow-2xl overflow-hidden z-10">
+      <div className="relative w-full max-w-xl bg-[#141118]/90 backdrop-blur-2xl rounded-2xl border border-[#fed7aa]/15 shadow-2xl overflow-hidden z-10">
         <Command
-          className="w-full flex flex-col bg-transparent text-[#111111]"
+          className="w-full flex flex-col bg-transparent text-[#fff7ed]"
           loop
         >
-          {/* Header search bar */}
-          <div className="flex items-center px-4 py-3.5 border-b border-[#111111]/12 gap-3 bg-white">
-            <Search className="w-5 h-5 text-[#FF3B00] shrink-0" />
+          <div className="flex items-center px-4 py-3 border-b border-[#fed7aa]/10 gap-3 bg-[#1c1622]/80">
+            <SolarSearch className="w-5 h-5 text-[#f97316] shrink-0" />
             <Command.Input
               autoFocus
-              placeholder="Busque seções ou ações... (Ex: 'Projetos', 'Ferramentas', 'Email')"
-              className="w-full bg-transparent text-sm placeholder:text-[#575551] outline-none text-[#111111]"
+              placeholder="Buscar seções ou sistemas em produção..."
+              className="w-full bg-transparent text-sm placeholder:text-neutral-500 outline-none text-[#fff7ed]"
             />
-            <kbd className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-mono text-[#575551] bg-[#F4F1EA] border border-[#111111]/15 rounded">
+            <kbd className="hidden sm:inline-flex items-center px-2 py-0.5 text-xs font-mono text-neutral-400 bg-[#2c2234] border border-[#fed7aa]/10 rounded">
               ESC
             </kbd>
           </div>
 
           <Command.List className="max-h-80 overflow-y-auto p-2 space-y-1">
-            <Command.Empty className="py-6 text-center text-sm text-[#575551]">
+            <Command.Empty className="py-6 text-center text-sm text-neutral-400">
               Nenhum comando encontrado.
             </Command.Empty>
 
             <Command.Group
               heading="Navegação Rápida"
-              className="text-xs font-mono uppercase text-[#FF3B00] font-bold px-2 py-1.5"
+              className="text-xs font-mono uppercase text-[#f97316] px-2 py-1.5"
             >
-              <Command.Item
-                onSelect={() => scrollTo("exp-hero")}
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer select-none text-[#111111] hover:bg-white transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Sparkles className="w-4 h-4 text-[#FF3B00]" />
-                  <span>Início — Hero Cinética &amp; Magnética</span>
-                </div>
-                <span className="text-xs text-[#575551] font-mono">Topo</span>
-              </Command.Item>
-
-              <Command.Item
-                onSelect={() => scrollTo("exp-projects")}
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer select-none text-[#111111] hover:bg-white transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Layers className="w-4 h-4 text-[#FF3B00]" />
-                  <span>Projetos — Horizontal Pin &amp; Cards Magnéticos</span>
-                </div>
-                <span className="text-xs text-[#575551] font-mono">GIDE, Concursos, Meu Porto</span>
-              </Command.Item>
-
-              <Command.Item
-                onSelect={() => scrollTo("stack")}
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer select-none text-[#111111] hover:bg-white transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Code2 className="w-4 h-4 text-[#111111]" />
-                  <span>Caixa de Ferramentas &amp; Stack</span>
-                </div>
-                <span className="text-xs text-[#575551] font-mono">Laravel, React, Postgres</span>
-              </Command.Item>
-
-              <Command.Item
-                onSelect={() => scrollTo("career")}
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer select-none text-[#111111] hover:bg-white transition-colors"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Briefcase className="w-4 h-4 text-[#111111]" />
-                  <span>Trajetória Profissional (2025 — Hoje)</span>
-                </div>
-                <span className="text-xs text-[#575551] font-mono">TI → Full-Stack</span>
-              </Command.Item>
+              {[
+                { id: "hero", label: "Início", meta: "TechText & Grainient" },
+                {
+                  id: "about",
+                  label: "Sobre Mim e Credencial 3D",
+                  meta: "Lanyard",
+                },
+                {
+                  id: "projects",
+                  label: "Projetos em Produção",
+                  meta: "4 Sistemas",
+                },
+                {
+                  id: "manifesto",
+                  label: "Princípio de Engenharia",
+                  meta: "ScrollReveal",
+                },
+                {
+                  id: "career",
+                  label: "Trajetória Profissional",
+                  meta: "2025 a 2026",
+                },
+                { id: "contact", label: "Contato Direto", meta: "E mail" },
+              ].map((item) => (
+                <Command.Item
+                  key={item.id}
+                  onSelect={() => scrollTo(item.id)}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer select-none text-neutral-200 hover:bg-[#2c2234] hover:text-[#fff7ed] data-[selected=true]:bg-[#2c2234] data-[selected=true]:text-[#fff7ed]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <SolarSparkles className="w-4 h-4 text-[#f97316]" />
+                    <span>{item.label}</span>
+                  </div>
+                  <span className="text-xs text-neutral-400 font-mono">
+                    {item.meta}
+                  </span>
+                </Command.Item>
+              ))}
             </Command.Group>
 
             <Command.Group
-              heading="Contato Direto"
-              className="text-xs font-mono uppercase text-[#575551] font-bold px-2 pt-3 pb-1"
+              heading="Inspecionar Sistemas"
+              className="text-xs font-mono uppercase text-neutral-400 px-2 pt-3 pb-1"
+            >
+              {(
+                [
+                  {
+                    id: "gide",
+                    label: "GIDE • Avaliação em Rede",
+                    tech: "IndexedDB e QR",
+                  },
+                  {
+                    id: "concursos",
+                    label: "Portal de Concursos",
+                    tech: "PDF Headless",
+                  },
+                  {
+                    id: "meu-porto",
+                    label: "Meu Porto • Comunidade Escolar",
+                    tech: "Match 96%",
+                  },
+                  {
+                    id: "pizzashop",
+                    label: "PizzaShop Web",
+                    tech: "React 19 e Zod",
+                  },
+                ] as const
+              ).map((proj) => (
+                <Command.Item
+                  key={proj.id}
+                  onSelect={() => selectProject(proj.id)}
+                  className="flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer select-none text-neutral-200 hover:bg-[#2c2234] hover:text-[#fff7ed] data-[selected=true]:bg-[#2c2234] data-[selected=true]:text-[#fff7ed]"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <SolarLayers className="w-4 h-4 text-[#f97316]" />
+                    <span>{proj.label}</span>
+                  </div>
+                  <span className="text-xs text-neutral-400 font-mono">
+                    {proj.tech}
+                  </span>
+                </Command.Item>
+              ))}
+            </Command.Group>
+
+            <Command.Group
+              heading="Ações Diretas"
+              className="text-xs font-mono uppercase text-neutral-400 px-2 pt-3 pb-1"
             >
               <Command.Item
                 onSelect={handleCopyEmail}
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer select-none text-[#111111] hover:bg-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer select-none text-neutral-200 hover:bg-[#2c2234] hover:text-[#fff7ed] data-[selected=true]:bg-[#2c2234] data-[selected=true]:text-[#fff7ed]"
               >
                 <div className="flex items-center gap-2.5">
                   {copied ? (
-                    <Check className="w-4 h-4 text-emerald-700" />
+                    <SolarCheck className="w-4 h-4 text-[#f97316]" />
                   ) : (
-                    <Copy className="w-4 h-4 text-[#FF3B00]" />
+                    <SolarCopy className="w-4 h-4 text-[#f97316]" />
                   )}
                   <span>
                     {copied
-                      ? "E-mail copiado com sucesso!"
-                      : "Copiar meu e-mail (lucascaracoci2@gmail.com)"}
+                      ? "Endereço copiado para a área de transferência"
+                      : "Copiar e mail (lucascaracoci2@gmail.com)"}
                   </span>
                 </div>
-                <span className="text-xs text-[#575551] font-mono">1 clique</span>
+                <span className="text-xs text-neutral-400 font-mono">
+                  1 clique
+                </span>
               </Command.Item>
 
               <Command.Item
@@ -159,20 +209,20 @@ export function CommandMenu({ open, onOpenChange }: CommandMenuProps) {
                   window.open("https://github.com/Lucas-Caracoci", "_blank");
                   onOpenChange(false);
                 }}
-                className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm cursor-pointer select-none text-[#111111] hover:bg-white transition-colors"
+                className="flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer select-none text-neutral-200 hover:bg-[#2c2234] hover:text-[#fff7ed] data-[selected=true]:bg-[#2c2234] data-[selected=true]:text-[#fff7ed]"
               >
                 <div className="flex items-center gap-2.5">
-                  <GithubIcon className="w-4 h-4 text-[#111111]" />
-                  <span>Abrir meu GitHub (Lucas-Caracoci)</span>
+                  <GithubIcon className="w-4 h-4 text-[#fff7ed]" />
+                  <span>Abrir perfil no GitHub</span>
                 </div>
-                <ExternalLink className="w-3.5 h-3.5 text-[#575551]" />
+                <SolarArrowUpRight className="w-4 h-4 text-neutral-400" />
               </Command.Item>
             </Command.Group>
           </Command.List>
 
-          <div className="px-4 py-2 bg-[#EAE5DC] border-t border-[#111111]/10 text-[11px] font-mono text-[#575551] flex items-center justify-between">
+          <div className="px-4 py-2 bg-[#1c1622]/80 border-t border-[#fed7aa]/10 text-xs font-mono text-neutral-400 flex items-center justify-between">
             <span>Navegue com ↑ / ↓ e Enter</span>
-            <span className="text-[#FF3B00] font-bold">Swiss Kinetic Edition</span>
+            <span className="text-[#f97316]">React Bits Edition</span>
           </div>
         </Command>
       </div>

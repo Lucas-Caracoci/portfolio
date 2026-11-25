@@ -13,31 +13,33 @@ const geistMono = Geist_Mono({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#F4F1EA",
+  themeColor: "#120f17",
   width: "device-width",
   initialScale: 1,
 };
 
 export const metadata: Metadata = {
-  title: "Lucas Caracoci — Engenheiro de Software Full-Stack",
+  title: "Lucas Caracoci • Engenheiro de Software Full Stack e Cloud",
   description:
-    "Oi, eu sou o Lucas. Construo sistemas web que não travam na hora H e interfaces que dão gosto de usar com Laravel, React, Next.js e TypeScript.",
+    "Portfólio de engenharia de software de Lucas Caracoci. Sistemas web críticos com sincronização local, motores de documentos e interfaces de alta precisão em Laravel, React 19, Next.js e PostgreSQL.",
   keywords: [
     "Lucas Caracoci",
     "Engenheiro de Software",
-    "Desenvolvedor Full-Stack",
+    "Desenvolvedor Full Stack",
     "Laravel",
-    "React",
+    "React 19",
     "Next.js",
     "Inertia.js",
     "PostgreSQL",
-    "Design Engineering",
+    "Cloud Computing",
   ],
-  authors: [{ name: "Lucas Caracoci", url: "https://github.com/Lucas-Caracoci" }],
+  authors: [
+    { name: "Lucas Caracoci", url: "https://github.com/Lucas-Caracoci" },
+  ],
   openGraph: {
-    title: "Lucas Caracoci — Engenheiro de Software Full-Stack",
+    title: "Lucas Caracoci • Engenheiro de Software Full Stack e Cloud",
     description:
-      "Sistemas web de missão crítica, sincronização Offline-First e interfaces pensadas para pessoas reais.",
+      "Sistemas web críticos, sincronização local via IndexedDB e interfaces de alta precisão.",
     type: "website",
     locale: "pt_BR",
   },
@@ -53,7 +55,7 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#F4F1EA] text-[#111111] selection:bg-[#FF3B00] selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#120f17] text-[#fff7ed] selection:bg-[#f97316] selection:text-[#120f17]">
         {children}
       </body>
     </html>
