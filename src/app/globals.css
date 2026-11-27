@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  --background: #120f17;
-  --surface-1: #1a1520;
-  --surface-2: #221b29;
-  --surface-3: #2c2234;
-  --surface-4: #382b42;
+  --background: #111111;
+  --surface-1: #161616;
+  --surface-2: #1c1c1c;
+  --surface-3: #242424;
+  --surface-4: #2e2e2e;
   --foreground: #fff7ed;
-  --muted: #d6c5b3;
+  --muted: #d4d4d4;
   --accent: #f97316;
   --accent-soft: #fed7aa;
 }
@@ -24,14 +24,14 @@
 }
 
 html {
-  background-color: #120f17;
+  background-color: #111111;
   color: #fff7ed;
   color-scheme: dark;
   scroll-behavior: smooth;
 }
 
 body {
-  background-color: #120f17;
+  background-color: #111111;
   color: #fff7ed;
   font-feature-settings: "rlig" 1, "calt" 1, "cv11" 1;
   overflow-x: hidden;
@@ -39,7 +39,7 @@ body {
 
 ::selection {
   background-color: #f97316;
-  color: #120f17;
+  color: #111111;
 }
 
 /* Accessible keyboard focus ring (Rule B9) */
@@ -95,14 +95,25 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #120f17;
+  background: #111111;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2c2234;
+  background: #262626;
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #f97316;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .rb-shiny-text,
+  .rb-star-border-beam {
+    animation: none !important;
+  }
 }

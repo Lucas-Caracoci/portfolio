@@ -16,8 +16,10 @@ import {
   SolarClock,
   SolarSend,
   SolarAlertCircle,
+  SolarDownload,
 } from "@/components/react-bits/icons";
 import { GithubIcon } from "@/components/icons/github";
+import { LinkedinIcon } from "@/components/icons/linkedin";
 
 const baseCurve = [0.22, 1, 0.36, 1] as const;
 
@@ -28,9 +30,7 @@ interface RbFooterProps {
 export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
   const [copied, setCopied] = useState(false);
   const [time, setTime] = useState("");
-  const [legalView, setLegalView] = useState<"privacy" | "terms" | null>(null);
 
-  // Client-side validated quick contact form (Rule B9 / B10)
   const [senderEmail, setSenderEmail] = useState("");
   const [message, setMessage] = useState("");
   const [formState, setFormState] = useState<
@@ -69,7 +69,7 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
     if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
       setFormState("error");
       setErrorMessage(
-        "Formato de e mail inválido. Informe um endereço válido como voce@empresa.com."
+        "Formato de e-mail inválido. Informe um endereço válido como voce@empresa.com."
       );
       return;
     }
@@ -98,15 +98,15 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
   };
 
   return (
-    <footer id="contact" className="relative pt-24 pb-16 px-4 sm:px-8">
-      <div className="max-w-7xl mx-auto space-y-16">
-        <SpotlightCard className="p-6 sm:p-12">
+    <footer id="contact" className="relative pt-24 pb-14 px-4 sm:px-8">
+      <div className="max-w-7xl mx-auto space-y-14">
+        <SpotlightCard className="p-6 sm:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-            {/* Left 6 Cols: Direct Offer, Risk Reversal & 1-Click Email */}
+            {/* Left 6 Cols: Direct Offer, Copy Email & Conversion Shortcuts */}
             <div className="lg:col-span-6 space-y-6">
               <div className="space-y-3">
                 <DecryptedText
-                  text="05 // CONTATO DIRETO"
+                  text="04 // CONTATO DIRETO"
                   className="text-xs text-[#f97316] uppercase tracking-widest"
                 />
                 <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#fff7ed] text-balance">
@@ -115,17 +115,17 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                 <p className="text-base text-neutral-300 text-pretty">
                   Disponível para oportunidades como Engenheiro de Software Full
                   Stack e projetos de arquitetura com Laravel, React 19, Next.js
-                  e PostgreSQL. Conversa técnica inicial sem compromisso e
-                  resposta direta em até 24 horas.
+                  e PostgreSQL. Conversa técnica inicial sem compromisso.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-[#1c1622]/70 backdrop-blur-md border border-[#fed7aa]/12 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              {/* Copy E-mail Bar */}
+              <div className="p-4 rounded-xl bg-[#111111]/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <div className="text-xs font-mono text-neutral-400">
-                    E MAIL DIRETO
+                    E-MAIL DIRETO
                   </div>
-                  <div className="text-sm sm:text-base font-mono font-semibold text-[#fff7ed] select-all">
+                  <div className="text-sm sm:text-base font-mono font-semibold text-white select-all">
                     lucascaracoci2@gmail.com
                   </div>
                 </div>
@@ -135,7 +135,11 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                     <button
                       type="button"
                       onClick={handleCopyEmail}
-                      className="py-2 px-3 rounded-xl bg-[#fed7aa] hover:bg-[#fdba74] text-[#120f17] text-base font-semibold flex items-center gap-2 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98]"
+                      className={`py-2 px-3.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98] ${
+                        copied
+                          ? "bg-[#f97316] text-[#111111]"
+                          : "bg-[#fed7aa] hover:bg-[#fdba74] text-[#111111]"
+                      }`}
                     >
                       <AnimatePresence mode="wait" initial={false}>
                         {copied ? (
@@ -144,11 +148,11 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                             initial={{ opacity: 0, y: 4 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -4 }}
-                            transition={{ duration: 0.18, ease: baseCurve }}
-                            className="flex items-center gap-2"
+                            transition={{ duration: 0.16, ease: baseCurve }}
+                            className="flex items-center gap-1.5"
                           >
-                            <SolarCheck className="w-4 h-4 text-[#9a3412]" />
-                            <span>Endereço copiado</span>
+                            <SolarCheck className="w-4 h-4" />
+                            <span>Copiado!</span>
                           </motion.span>
                         ) : (
                           <motion.span
@@ -156,11 +160,11 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                             initial={{ opacity: 0, y: -4 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 4 }}
-                            transition={{ duration: 0.18, ease: baseCurve }}
-                            className="flex items-center gap-2"
+                            transition={{ duration: 0.16, ease: baseCurve }}
+                            className="flex items-center gap-1.5"
                           >
                             <SolarCopy className="w-4 h-4" />
-                            <span>Copiar e mail</span>
+                            <span>Copiar e-mail</span>
                           </motion.span>
                         )}
                       </AnimatePresence>
@@ -168,24 +172,58 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                   </StarBorder>
                 </Magnet>
               </div>
+
+              {/* Direct Conversion Shortcuts: LinkedIn, GitHub, CV PDF */}
+              <div className="flex flex-wrap items-center gap-3">
+                <a
+                  href="https://www.linkedin.com/in/lucascaracoci/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#1C1C1C] hover:bg-[#242424] border border-white/10 hover:border-[#f97316]/50 text-xs font-mono font-semibold text-neutral-100 hover:text-white transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98]"
+                >
+                  <LinkedinIcon className="w-4 h-4 text-[#f97316]" />
+                  <span>LinkedIn</span>
+                  <SolarArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+                </a>
+
+                <a
+                  href="https://github.com/Lucas-Caracoci"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#1C1C1C] hover:bg-[#242424] border border-white/10 hover:border-[#f97316]/50 text-xs font-mono font-semibold text-neutral-100 hover:text-white transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98]"
+                >
+                  <GithubIcon className="w-4 h-4 text-[#f97316]" />
+                  <span>GitHub</span>
+                  <SolarArrowUpRight className="w-3.5 h-3.5 text-neutral-400" />
+                </a>
+
+                <a
+                  href="/cv-lucas-caracoci.pdf"
+                  download="CV-Lucas-Caracoci.pdf"
+                  className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#1C1C1C] hover:bg-[#242424] border border-white/10 hover:border-[#f97316]/50 text-xs font-mono font-semibold text-neutral-100 hover:text-white transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.98]"
+                >
+                  <SolarDownload className="w-4 h-4 text-[#f97316]" />
+                  <span>Baixar CV (PDF)</span>
+                </a>
+              </div>
             </div>
 
-            {/* Right 6 Cols: Validated Quick Dispatch Form (Rule B9 / B10) */}
+            {/* Right 6 Cols: Direct Form directly on the unified dark neutral card */}
             <form
               onSubmit={handleSubmit}
               noValidate
-              className="lg:col-span-6 p-6 rounded-xl bg-[#1c1622]/70 backdrop-blur-md border border-[#fed7aa]/12 space-y-4"
+              className="lg:col-span-6 lg:pl-10 lg:border-l lg:border-white/10 space-y-5"
             >
-              <div className="text-sm font-semibold text-[#fff7ed]">
+              <div className="text-base font-semibold text-white">
                 Enviar mensagem rápida
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <label
                   htmlFor="contact-email"
-                  className="block text-xs font-mono text-neutral-300"
+                  className="block text-xs font-mono font-medium text-neutral-200"
                 >
-                  Seu e mail corporativo ou pessoal
+                  Seu e-mail corporativo ou pessoal
                 </label>
                 <input
                   id="contact-email"
@@ -197,20 +235,20 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                     if (formState === "error") setFormState("idle");
                   }}
                   placeholder="voce@empresa.com"
-                  className="w-full px-3 py-2 rounded-lg bg-[#1a1520] border border-[#fed7aa]/15 text-sm text-[#fff7ed] placeholder:text-neutral-500 focus:border-[#f97316] transition-colors duration-200"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#111111]/90 border border-white/15 text-sm text-white placeholder:text-neutral-400 focus:border-[#f97316] transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]"
                 />
               </div>
 
-              <div className="space-y-1.5">
+              <div className="space-y-2">
                 <label
                   htmlFor="contact-message"
-                  className="block text-xs font-mono text-neutral-300"
+                  className="block text-xs font-mono font-medium text-neutral-200"
                 >
                   Resumo do projeto ou vaga
                 </label>
                 <textarea
                   id="contact-message"
-                  rows={3}
+                  rows={4}
                   required
                   value={message}
                   onChange={(e) => {
@@ -218,14 +256,14 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
                     if (formState === "error") setFormState("idle");
                   }}
                   placeholder="Conte sobre o escopo técnico, stack ou oportunidade..."
-                  className="w-full px-3 py-2 rounded-lg bg-[#1a1520] border border-[#fed7aa]/15 text-sm text-[#fff7ed] placeholder:text-neutral-500 focus:border-[#f97316] transition-colors duration-200 resize-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-[#111111]/90 border border-white/15 text-sm text-white placeholder:text-neutral-400 focus:border-[#f97316] transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] resize-none"
                 />
               </div>
 
               {formState === "error" && (
                 <div
                   role="alert"
-                  className="p-3 rounded-lg bg-[#2c2234] border border-amber-400/40 text-xs text-amber-300 flex items-start gap-2"
+                  className="p-3 rounded-xl bg-[#1C1C1C] border border-amber-400/40 text-xs text-amber-300 flex items-start gap-2"
                 >
                   <SolarAlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                   <span>{errorMessage}</span>
@@ -235,25 +273,25 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
               {formState === "success" && (
                 <div
                   role="status"
-                  className="p-3 rounded-lg bg-[#2c2234] border border-[#f97316]/40 text-xs text-[#fed7aa] flex items-center gap-2"
+                  className="p-3 rounded-xl bg-[#1C1C1C] border border-[#f97316]/40 text-xs text-[#fed7aa] flex items-center gap-2"
                 >
                   <SolarCheck className="w-4 h-4 shrink-0 text-[#f97316]" />
                   <span>
-                    Mensagem validada e aberta no seu cliente de e mail para
+                    Mensagem validada e aberta no seu cliente de e-mail para
                     Lucas Caracoci.
                   </span>
                 </div>
               )}
 
-              <div className="flex items-center justify-between gap-4 pt-1">
-                <span className="text-xs font-mono text-neutral-400">
-                  Validação instantânea no navegador
+              <div className="flex flex-wrap items-center justify-between gap-4 pt-1">
+                <span className="text-xs font-mono text-neutral-300">
+                  Respondo em até 24h
                 </span>
 
                 <button
                   type="submit"
                   disabled={formState === "loading"}
-                  className="py-2 px-3 rounded-lg bg-[#f97316] hover:bg-[#fb923c] disabled:opacity-50 text-[#120f17] text-base font-semibold flex items-center gap-2 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98]"
+                  className="py-2.5 px-4 rounded-xl bg-[#f97316] hover:bg-[#fb923c] disabled:opacity-50 text-[#111111] text-sm font-semibold inline-flex items-center gap-2 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98]"
                 >
                   <SolarSend className="w-4 h-4" />
                   <span>
@@ -267,87 +305,43 @@ export function RbFooter({ magnetEnabled = true }: RbFooterProps) {
           </div>
         </SpotlightCard>
 
-        {/* Legal / Privacy Drawer when requested (Rule B10) */}
-        <AnimatePresence>
-          {legalView && (
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={{ duration: 0.25, ease: baseCurve }}
-              className="p-6 rounded-2xl bg-[#1a1520] border border-[#fed7aa]/15 space-y-3"
-            >
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-[#fff7ed]">
-                  {legalView === "privacy"
-                    ? "Política de Privacidade e LGPD"
-                    : "Termos de Uso do Portfólio"}
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setLegalView(null)}
-                  className="px-3 py-1 rounded-lg bg-[#2c2234] text-xs font-mono text-[#fed7aa] hover:text-white cursor-pointer"
-                >
-                  Fechar
-                </button>
-              </div>
-              <p className="text-sm text-neutral-300 text-pretty">
-                {legalView === "privacy"
-                  ? "Este portfólio não coleta cookies de rastreamento publicitário nem armazena dados pessoais em servidores intermediários. As mensagens enviadas pelo formulário são abertas diretamente no seu cliente de e mail padrão para contato com Lucas Caracoci."
-                  : "Todo o conteúdo arquitetural, estudos de caso e código fonte deste portfólio pertencem a Lucas Caracoci. Os sistemas institucionais citados são descritos apenas para fins de comprovação técnica profissional, preservando integralmente o sigilo de dados operacionais."}
-              </p>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* Bottom Metadata & Legal Links Row */}
-        <div className="pt-8 border-t border-[#fed7aa]/10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-neutral-400">
+        {/* Bottom Metadata & Social Links Row */}
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 text-xs font-mono text-neutral-300">
           <div className="flex flex-wrap items-center gap-6">
-            <span className="flex items-center gap-2 text-neutral-200">
+            <span className="flex items-center gap-2 text-neutral-100">
               <SolarMapPin className="w-4 h-4 text-[#f97316]" />
-              <span>Arraial do Cabo RJ, Brasil</span>
+              <span>Arraial do Cabo, RJ • Brasil</span>
             </span>
-            <span className="flex items-center gap-2">
+            <span className="flex items-center gap-2 text-neutral-300">
               <SolarClock className="w-4 h-4 text-neutral-400" />
               <span>{time || "Horário de Brasília"}</span>
             </span>
           </div>
 
           <div className="flex flex-wrap items-center gap-6">
-            <button
-              type="button"
-              onClick={() =>
-                setLegalView((prev) =>
-                  prev === "privacy" ? null : "privacy"
-                )
-              }
-              className="hover:text-[#fed7aa] transition-colors duration-200 cursor-pointer"
+            <a
+              href="https://www.linkedin.com/in/lucascaracoci/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-neutral-200 hover:text-[#f97316] transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]"
             >
-              Privacidade
-            </button>
-
-            <button
-              type="button"
-              onClick={() =>
-                setLegalView((prev) => (prev === "terms" ? null : "terms"))
-              }
-              className="hover:text-[#fed7aa] transition-colors duration-200 cursor-pointer"
-            >
-              Termos
-            </button>
+              <LinkedinIcon className="w-4 h-4" />
+              <span>LinkedIn</span>
+              <SolarArrowUpRight className="w-3.5 h-3.5" />
+            </a>
 
             <a
               href="https://github.com/Lucas-Caracoci"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-neutral-200 hover:text-[#f97316] transition-colors duration-200"
+              className="flex items-center gap-1.5 text-neutral-200 hover:text-[#f97316] transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]"
             >
               <GithubIcon className="w-4 h-4" />
               <span>GitHub</span>
               <SolarArrowUpRight className="w-3.5 h-3.5" />
             </a>
 
-            <span>© 2026 Lucas Caracoci</span>
+            <span className="text-neutral-400">© 2026 Lucas Caracoci</span>
           </div>
         </div>
       </div>

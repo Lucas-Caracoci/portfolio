@@ -17,6 +17,7 @@ export interface BranchedMenuChild {
 
 export interface BranchedMenuItem {
   label: string;
+  labelNode?: ReactNode;
   value?: string;
   children?: BranchedMenuChild[];
 }
@@ -26,6 +27,7 @@ export interface BranchedMenuProps {
   defaultOpen?: number | number[];
   defaultActive?: string;
   activeValue?: string;
+  scrollProgress?: number;
   onSelect?: (value: string, item: BranchedMenuChild | BranchedMenuItem) => void;
   onToggle?: (index: number, open: boolean) => void;
   color?: string;
@@ -73,11 +75,12 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
   defaultOpen = 0,
   defaultActive = '',
   activeValue,
+  scrollProgress,
   onSelect,
   onToggle,
-  color = '#f5f5f5',
-  accentColor = '#10b981',
-  lineColor = '#3f3f46',
+  color = '#ffffff',
+  accentColor = '#f97316',
+  lineColor = 'rgba(255, 255, 255, 0.24)',
   width = 220,
   rowHeight = 34,
   indent = 36,
@@ -178,9 +181,18 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
         } as CSSProperties
       }
     >
+      {typeof scrollProgress === 'number' ? (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute top-2 bottom-0 left-0 w-0.5 origin-top rounded-[1px] [background:linear-gradient(to_bottom,var(--bm-accent)_0%,var(--bm-accent)_82%,transparent_100%)] [transition:transform_120ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+          style={{
+            transform: `scaleY(${Math.max(0.06, Math.min(1, scrollProgress))})`,
+          }}
+        />
+      ) : null}
       <span
         ref={markerRef}
-        className="absolute -top-px left-0 z-[1] h-4 w-0.5 rounded-[1px] opacity-0 [background:var(--bm-accent)] [transition:top_220ms_cubic-bezier(0.23,1,0.32,1),opacity_150ms_ease] data-[on]:opacity-100 motion-reduce:[transition:opacity_150ms_ease]"
+        className="absolute -top-px left-0 z-[1] h-4 w-0.5 rounded-[1px] opacity-0 [background:var(--bm-accent)] [transition:top_240ms_cubic-bezier(0.22,1,0.36,1),opacity_180ms_ease] data-[on]:opacity-100 motion-reduce:[transition:opacity_150ms_ease]"
         aria-hidden="true"
       />
       {items.map((item, i) => {
@@ -200,16 +212,17 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
                 heads.current[i] = el;
               }}
               type="button"
-              className="m-0 block cursor-pointer border-0 bg-transparent py-[9px] text-left font-medium outline-none [color:var(--bm-muted)] [font-family:inherit] [font-size:calc(var(--bm-font)+1px)] [-webkit-tap-highlight-color:transparent] [transition:color_200ms_ease] group-data-[open]/section:[color:var(--bm-ink)] data-[active]:[color:var(--bm-ink)] hover:[color:var(--bm-ink)]"
+              aria-label={item.label}
+              className="m-0 block cursor-pointer border-0 bg-transparent py-[9px] text-left font-semibold outline-none [color:var(--bm-muted)] [font-family:inherit] [font-size:calc(var(--bm-font)+1px)] [text-shadow:0_1px_4px_rgba(10,10,10,0.95),0_0_12px_rgba(10,10,10,0.85)] [-webkit-tap-highlight-color:transparent] [transition:color_220ms_cubic-bezier(0.22,1,0.36,1)] group-data-[open]/section:[color:var(--bm-ink)] data-[active]:[color:var(--bm-ink)] hover:[color:var(--bm-ink)]"
               aria-expanded={kids ? isOpen : undefined}
               aria-current={leafActive ? 'true' : undefined}
               data-active={leafActive ? '' : undefined}
               onClick={() => (kids ? toggle(i) : select(leafValue, item))}
             >
-              {item.label}
+              {item.labelNode ?? item.label}
             </button>
             {kids ? (
-              <div className="grid [grid-template-rows:0fr] [transition:grid-template-rows_var(--bm-fold)_cubic-bezier(0.23,1,0.32,1)] group-data-[open]/section:[grid-template-rows:1fr] motion-reduce:transition-none">
+              <div className="grid [grid-template-rows:0fr] [transition:grid-template-rows_var(--bm-fold)_cubic-bezier(0.22,1,0.36,1)] group-data-[open]/section:[grid-template-rows:1fr] motion-reduce:transition-none">
                 <div className="min-h-0 overflow-hidden">
                   <div className="relative box-border py-1.5" style={{ height: bodyH }}>
                     <svg
@@ -229,30 +242,49 @@ const BranchedMenu: React.FC<BranchedMenuProps> = ({
                           d={branch(k)}
                         />
                       ))}
-                      {kids.map((kid, k) => (
-                        <path
-                          key={kid.value}
-                          className="fill-none [stroke:var(--bm-accent)] [stroke-width:var(--bm-line-w)] [stroke-linecap:round] [stroke-linejoin:round] [transition:stroke-dashoffset_var(--bm-draw)_cubic-bezier(0.23,1,0.32,1)] motion-reduce:transition-none"
-                          d={reach(k)}
-                          style={{
-                            strokeDasharray: length(k),
-                            strokeDashoffset: kid.value === active ? 0 : length(k)
-                          }}
-                        />
-                      ))}
+                      {kids.map((kid, k) => {
+                        const isKidActive = kid.value === active;
+                        return (
+                          <g key={kid.value}>
+                            <path
+                              className="fill-none [stroke:var(--bm-accent)] [stroke-width:var(--bm-line-w)] [stroke-linecap:round] [stroke-linejoin:round] [transition:stroke-dashoffset_var(--bm-draw)_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                              d={reach(k)}
+                              style={{
+                                strokeDasharray: length(k),
+                                strokeDashoffset: isKidActive ? 0 : length(k)
+                              }}
+                            />
+                            <circle
+                              cx={endX}
+                              cy={rowY(k)}
+                              r={isKidActive ? 5 : 0}
+                              className="fill-[var(--bm-accent)] opacity-25 [transition:r_220ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                            />
+                            <circle
+                              cx={endX}
+                              cy={rowY(k)}
+                              r={isKidActive ? 2.5 : 0}
+                              className="fill-[var(--bm-accent)] [transition:r_220ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+                            />
+                          </g>
+                        );
+                      })}
                     </svg>
                     {kids.map(kid => (
                       <button
                         key={kid.value}
                         type="button"
-                        className="m-0 box-border flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-0 pr-0 text-left outline-none [height:var(--bm-row)] [padding-left:var(--bm-indent)] [color:var(--bm-muted)] [font-family:inherit] [-webkit-tap-highlight-color:transparent] [transition:color_200ms_ease] hover:[color:var(--bm-ink)] data-[active]:font-medium data-[active]:[color:var(--bm-accent)]"
+                        className="group/kid m-0 box-border flex w-full cursor-pointer items-center gap-2 border-0 bg-transparent py-0 pr-0 text-left font-medium outline-none [height:var(--bm-row)] [padding-left:var(--bm-indent)] [color:var(--bm-muted)] [font-family:inherit] [text-shadow:0_1px_3px_rgba(10,10,10,0.95),0_0_10px_rgba(10,10,10,0.85)] [-webkit-tap-highlight-color:transparent] [transition:color_220ms_cubic-bezier(0.22,1,0.36,1)] hover:[color:var(--bm-ink)] data-[active]:font-semibold data-[active]:text-white"
                         aria-current={kid.value === active ? 'true' : undefined}
                         data-active={kid.value === active ? '' : undefined}
                         tabIndex={isOpen ? 0 : -1}
                         onClick={() => select(kid.value, kid)}
                       >
                         {kid.icon ? (
-                          <span className="inline-flex flex-none" aria-hidden="true">
+                          <span
+                            className="inline-flex flex-none transition-colors duration-200 group-data-[active]/kid:[color:var(--bm-accent)]"
+                            aria-hidden="true"
+                          >
                             {renderIcon(kid.icon)}
                           </span>
                         ) : null}

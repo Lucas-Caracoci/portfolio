@@ -36,7 +36,7 @@ export function SpotlightCard({
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setOpacity(1)}
       onMouseLeave={() => setOpacity(0)}
-      className={`group/card relative rounded-2xl bg-[#141118]/70 backdrop-blur-xl border border-[#fed7aa]/10 shadow-[0_24px_48px_-20px_rgba(0,0,0,0.65)] overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#f97316]/35 ${className}`}
+      className={`group/card relative rounded-2xl bg-[#161616]/88 backdrop-blur-xl border border-white/10 shadow-[0_24px_48px_-20px_rgba(0,0,0,0.7)] overflow-hidden transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-0.5 hover:border-[#f97316]/35 ${className}`}
     >
       {/* Glowing Cursor Perimeter Border */}
       <div
@@ -132,7 +132,7 @@ export function TiltedCard({
           scale: sScale,
           transformStyle: "preserve-3d",
         }}
-        className={`relative rounded-2xl bg-[#141118]/75 backdrop-blur-xl border border-[#fed7aa]/12 overflow-hidden will-change-transform ${className}`}
+        className={`relative rounded-2xl bg-[#161616]/88 backdrop-blur-xl border border-white/10 overflow-hidden will-change-transform ${className}`}
       >
         <div
           aria-hidden="true"

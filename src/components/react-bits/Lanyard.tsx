@@ -590,16 +590,16 @@ const drawFitted = (
 };
 
 const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: number, isBack: boolean) => {
-  // Deep Grainient Ember-Obsidian base (#120f17 -> #2a0f0a -> #0d0a10)
+  // Matte black base (#141414 -> #111111 -> #0d0d0d)
   const bg = ctx.createLinearGradient(0, 0, width, height);
-  bg.addColorStop(0, '#1e141c');
-  bg.addColorStop(0.5, '#120f17');
-  bg.addColorStop(1, '#22100d');
+  bg.addColorStop(0, '#171717');
+  bg.addColorStop(0.55, '#111111');
+  bg.addColorStop(1, '#0c0c0c');
   ctx.fillStyle = bg;
   ctx.fillRect(0, 0, width, height);
 
-  // Subtle architectural grid in warm peach (#fed7aa)
-  ctx.strokeStyle = 'rgba(254, 215, 170, 0.055)';
+  // Subtle architectural grid in warm neutral
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
   ctx.lineWidth = 2;
   const gridStep = 64;
   for (let x = 0; x < width; x += gridStep) {
@@ -615,20 +615,20 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     ctx.stroke();
   }
 
-  // Ember ambient glow (#f97316 -> #9a3412)
-  const glow = ctx.createRadialGradient(width * 0.5, height * 0.36, 20, width * 0.5, height * 0.36, width * 0.65);
-  glow.addColorStop(0, 'rgba(249, 115, 22, 0.26)');
-  glow.addColorStop(0.55, 'rgba(154, 52, 18, 0.12)');
-  glow.addColorStop(1, 'rgba(18, 15, 23, 0)');
+  // Subtle burnt-orange / amber ambient glow
+  const glow = ctx.createRadialGradient(width * 0.5, height * 0.36, 20, width * 0.5, height * 0.36, width * 0.62);
+  glow.addColorStop(0, 'rgba(249, 115, 22, 0.16)');
+  glow.addColorStop(0.55, 'rgba(234, 88, 12, 0.07)');
+  glow.addColorStop(1, 'rgba(17, 17, 17, 0)');
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, width, height);
 
-  // Top ember accent bar below lanyard slot
+  // Top burnt-orange accent bar below lanyard slot
   ctx.fillStyle = '#f97316';
   ctx.fillRect(72, 168, width - 144, 6);
 
   // Outer technical border frame
-  ctx.strokeStyle = 'rgba(254, 215, 170, 0.18)';
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
   ctx.lineWidth = 3;
   ctx.strokeRect(56, 140, width - 112, height - 196);
 
@@ -637,9 +637,9 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     ctx.fillStyle = '#f97316';
     ctx.font = '700 28px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
     ctx.textAlign = 'left';
-    ctx.fillText('// CREDENCIAL DE ENGENHARIA', 88, 232);
+    ctx.fillText('// ENGENHARIA', 88, 232);
 
-    ctx.fillStyle = 'rgba(254, 215, 170, 0.68)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
     ctx.textAlign = 'right';
     ctx.fillText('ID #LC•2026', width - 88, 232);
 
@@ -648,7 +648,7 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     const cy = 500;
     ctx.beginPath();
     ctx.arc(cx, cy, 148, 0, Math.PI * 2);
-    ctx.fillStyle = '#18131d';
+    ctx.fillStyle = '#161616';
     ctx.fill();
     ctx.lineWidth = 5;
     ctx.strokeStyle = '#f97316';
@@ -657,7 +657,7 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     ctx.beginPath();
     ctx.arc(cx, cy, 124, 0, Math.PI * 2);
     ctx.lineWidth = 2;
-    ctx.strokeStyle = 'rgba(254, 215, 170, 0.25)';
+    ctx.strokeStyle = 'rgba(251, 146, 60, 0.35)';
     ctx.stroke();
 
     ctx.fillStyle = '#fff7ed';
@@ -668,17 +668,17 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     ctx.textBaseline = 'alphabetic';
 
     // Name & Title
-    ctx.fillStyle = '#fff7ed';
+    ctx.fillStyle = '#ffffff';
     ctx.font = '800 76px sans-serif';
     ctx.textAlign = 'center';
     ctx.fillText('LUCAS CARACOCI', cx, 770);
 
-    ctx.fillStyle = '#f97316';
+    ctx.fillStyle = '#fb923c';
     ctx.font = '700 32px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
     ctx.fillText('FULL STACK & CLOUD ENGINEER', cx, 830);
 
     // Divider
-    ctx.strokeStyle = 'rgba(254, 215, 170, 0.16)';
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
     ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(88, 885);
@@ -695,21 +695,21 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     let sy = 955;
     specs.forEach(([label, val]) => {
       ctx.textAlign = 'left';
-      ctx.fillStyle = 'rgba(254, 215, 170, 0.52)';
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
       ctx.font = '600 24px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
       ctx.fillText(label, 88, sy);
 
       ctx.textAlign = 'right';
-      ctx.fillStyle = '#fff7ed';
+      ctx.fillStyle = '#f5f5f5';
       ctx.font = '700 25px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
       ctx.fillText(val, width - 88, sy);
       sy += 64;
     });
 
     // Bottom verification barcode strip
-    ctx.fillStyle = '#18131d';
+    ctx.fillStyle = '#161616';
     ctx.fillRect(88, height - 180, width - 176, 88);
-    ctx.strokeStyle = 'rgba(249, 115, 22, 0.48)';
+    ctx.strokeStyle = 'rgba(249, 115, 22, 0.45)';
     ctx.lineWidth = 2;
     ctx.strokeRect(88, height - 180, width - 176, 88);
 
@@ -730,7 +730,7 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
     ctx.textAlign = 'left';
     ctx.fillText('// SISTEMAS EM PRODUÇÃO', 88, 232);
 
-    ctx.fillStyle = 'rgba(254, 215, 170, 0.65)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
     ctx.textAlign = 'right';
     ctx.fillText('VERSO • 02', width - 88, 232);
 
@@ -743,9 +743,9 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
 
     let y = 340;
     systems.forEach(([title, desc]) => {
-      ctx.fillStyle = '#18131d';
+      ctx.fillStyle = '#161616';
       ctx.fillRect(88, y, width - 176, 150);
-      ctx.strokeStyle = 'rgba(254, 215, 170, 0.14)';
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
       ctx.lineWidth = 2;
       ctx.strokeRect(88, y, width - 176, 150);
 
@@ -754,18 +754,18 @@ const drawDefaultBadge = (ctx: CanvasRenderingContext2D, width: number, height: 
       ctx.font = '700 30px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
       ctx.fillText(title, 120, y + 60);
 
-      ctx.fillStyle = '#fed7aa';
+      ctx.fillStyle = '#e5e5e5';
       ctx.font = '500 25px sans-serif';
       ctx.fillText(desc, 120, y + 110);
       y += 180;
     });
 
     ctx.textAlign = 'center';
-    ctx.fillStyle = '#fff7ed';
+    ctx.fillStyle = '#ffffff';
     ctx.font = '700 30px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
     ctx.fillText('github.com/Lucas-Caracoci', cx, height - 175);
 
-    ctx.fillStyle = '#f97316';
+    ctx.fillStyle = '#fb923c';
     ctx.font = '600 26px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
     ctx.fillText('lucascaracoci2@gmail.com', cx, height - 125);
   }

@@ -1,19 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  SpotlightCard,
-  TiltedCard,
-  Magnet,
-} from "@/components/react-bits/ui-effects";
+import { motion } from "framer-motion";
+import { SpotlightCard } from "@/components/react-bits/ui-effects";
 import { DecryptedText } from "@/components/react-bits/text-effects";
 import {
   SolarArrowUpRight,
   SolarLock,
   SolarQrCode,
-  SolarWifiOff,
-  SolarCheck,
   SolarFileText,
   SolarLayers,
   SolarUsers,
@@ -29,11 +23,17 @@ interface ProjectOutcome {
   detail: string;
 }
 
+interface ProjectMetric {
+  value: string;
+  label: string;
+}
+
 interface CaseStudyItem {
   id: ProjectId;
   index: string;
   category: string;
   title: string;
+  metric?: ProjectMetric;
   summary: string;
   outcomes: ProjectOutcome[];
   techStack: string[];
@@ -47,11 +47,15 @@ const caseStudies: CaseStudyItem[] = [
     index: "01",
     category: "Avaliação Institucional e Indicadores",
     title: "GIDE",
+    metric: {
+      value: "94,2%",
+      label: "de quórum apurado com sync local",
+    },
     summary:
       "Plataforma de avaliação multidimensional para redes de ensino com controle de quórum em tempo real, votação anônima por QR Code e apuração automatizada de metas.",
     outcomes: [
       {
-        title: "Coleta com sincronização local",
+        title: "Coleta offline-first",
         detail:
           "Persistência no navegador via IndexedDB e Dexie.js para unidades escolares com conexão instável.",
       },
@@ -61,9 +65,9 @@ const caseStudies: CaseStudyItem[] = [
           "Emissão em lote de códigos anônimos com trava automática de cota por segmento escolar.",
       },
       {
-        title: "Motor de cálculo ponderado",
+        title: "Cálculo ponderado dinâmico",
         detail:
-          "Apuração dinâmica de notas com redistribuição automática de pesos para itens não aplicáveis.",
+          "Apuração de notas com redistribuição automática de pesos para itens não aplicáveis.",
       },
     ],
     techStack: [
@@ -79,8 +83,12 @@ const caseStudies: CaseStudyItem[] = [
   {
     id: "concursos",
     index: "02",
-    category: "Transparência Pública e Motor de Documentos",
+    category: "Transparência Pública e Documentos",
     title: "Portal de Concursos",
+    metric: {
+      value: "312+",
+      label: "editais migrados via Python ETL",
+    },
     summary:
       "Sistema de gestão e publicação de certames, editais e cronogramas com motor dedicado de unificação de PDFs e migração estruturada de acervo histórico.",
     outcomes: [
@@ -92,10 +100,10 @@ const caseStudies: CaseStudyItem[] = [
       {
         title: "Ingestão de acervo histórico",
         detail:
-          "Pipeline em Python e SQL que saneou e estruturou mais de 300 editais legados no PostgreSQL.",
+          "Pipeline em Python e SQL que saneou e estruturou editais legados no PostgreSQL.",
       },
       {
-        title: "Proteção e auditoria completa",
+        title: "Proteção e auditoria",
         detail:
           "Ofuscação de identificadores públicos nas rotas de download e registro de trilha de auditoria.",
       },
@@ -129,7 +137,7 @@ const caseStudies: CaseStudyItem[] = [
           "Atendimento assíncrono segmentado entre coordenação pedagógica e suporte técnico.",
       },
       {
-        title: "Pipeline de mídia no navegador",
+        title: "Mídia otimizada no cliente",
         detail:
           "Conversão automática de fotos HEIC de dispositivos móveis e compressão antes do envio.",
       },
@@ -162,7 +170,7 @@ const caseStudies: CaseStudyItem[] = [
           "Filtros e formulários validados com React Hook Form e TypeScript estrito.",
       },
       {
-        title: "Acessibilidade completa por teclado",
+        title: "Acessibilidade por teclado",
         detail:
           "Modais, tabelas e controles construídos sobre primitivos Radix UI e Tailwind CSS v4.",
       },
@@ -179,21 +187,149 @@ const caseStudies: CaseStudyItem[] = [
   },
 ];
 
-function InteractiveSystemMockup({ id }: { id: ProjectId }) {
-  // 01. GIDE Live Offline-First & QR Voucher Simulator State
-  const [isOffline, setIsOffline] = useState(false);
-  const [vouchersCount, setVouchersCount] = useState(1482);
-  const [pendingQueue, setPendingQueue] = useState(0);
-  const [quorumPct, setQuorumPct] = useState(94.2);
-  const [docentePct, setDocentePct] = useState(92);
-  const [tecnicoPct, setTecnicoPct] = useState(78);
-  const [estudantePct, setEstudantePct] = useState(68);
-  const [voucherHash, setVoucherHash] = useState("GD8492");
-  const [syncLog, setSyncLog] = useState(
-    "IndexedDB sincronizado com PostgreSQL (0 pendências)"
-  );
+interface SyncLogEntry {
+  id: number;
+  tag: "INDEXEDDB" | "POSTGRESQL" | "REDE";
+  text: string;
+}
 
-  // 02. Concursos Live PDF Merger Simulator State
+function GideOfflineDemo() {
+  const [isOffline, setIsOffline] = useState(false);
+  const [pendingQueue, setPendingQueue] = useState(0);
+  const [logs, setLogs] = useState<SyncLogEntry[]>([
+    {
+      id: 1,
+      tag: "POSTGRESQL",
+      text: "Sincronização ativa • 0 votos pendentes no navegador",
+    },
+  ]);
+
+  const appendLog = (tag: SyncLogEntry["tag"], text: string) => {
+    setLogs((prev) => [{ id: Date.now() + Math.random(), tag, text }, ...prev].slice(0, 4));
+  };
+
+  const handleToggleNetwork = () => {
+    if (isOffline) {
+      setIsOffline(false);
+      if (pendingQueue > 0) {
+        const flushed = pendingQueue;
+        setPendingQueue(0);
+        appendLog(
+          "POSTGRESQL",
+          `Conexão restabelecida • ${flushed} voto(s) da fila local gravados em lote`
+        );
+      } else {
+        appendLog("REDE", "Conexão restabelecida • Sync em tempo real ativo");
+      }
+      return;
+    }
+
+    setIsOffline(true);
+    appendLog(
+      "REDE",
+      "Queda simulada • Persistência local Dexie.js assumiu os votos"
+    );
+  };
+
+  const handleSimulateVote = () => {
+    const code = `GD${Math.floor(1000 + Math.random() * 9000)}`;
+    if (isOffline) {
+      setPendingQueue((prev) => {
+        const next = prev + 1;
+        appendLog(
+          "INDEXEDDB",
+          `Voucher #${code} salvo localmente (${next} na fila de sync)`
+        );
+        return next;
+      });
+      return;
+    }
+
+    appendLog(
+      "POSTGRESQL",
+      `Voucher #${code} apurado e persistido diretamente em 42ms`
+    );
+  };
+
+  return (
+    <div className="rounded-xl bg-[#111111]/90 border border-white/10 p-5 space-y-5">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-white/10">
+        <div className="flex items-center gap-2.5 text-xs font-mono">
+          <span
+            aria-hidden="true"
+            className={`w-2 h-2 rounded-full ${
+              isOffline ? "bg-amber-400" : "bg-emerald-400"
+            }`}
+          />
+          <span className="text-neutral-200 font-semibold">
+            {isOffline ? "Offline (IndexedDB ativo)" : "Online (Sync ativo)"}
+          </span>
+          {pendingQueue > 0 && (
+            <span className="px-2 py-0.5 rounded-md bg-[#1C1C1C] border border-amber-400/30 text-amber-300">
+              {pendingQueue} na fila
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={handleToggleNetwork}
+            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98] ${
+              isOffline
+                ? "bg-amber-500/15 text-amber-300 border-amber-400/40 hover:bg-amber-500/25"
+                : "bg-[#1C1C1C] text-neutral-200 border-white/10 hover:border-[#f97316]/50 hover:text-white"
+            }`}
+          >
+            {isOffline ? "Reconectar" : "Simular queda"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleSimulateVote}
+            className="px-3 py-1.5 rounded-lg bg-[#f97316] hover:bg-[#fb923c] text-[#111111] text-xs font-mono font-bold inline-flex items-center gap-1.5 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98]"
+          >
+            <SolarQrCode className="w-3.5 h-3.5" />
+            <span>Simular voto QR</span>
+          </button>
+        </div>
+      </div>
+
+      <div className="space-y-2.5">
+        <div className="flex items-center justify-between text-[11px] font-mono uppercase tracking-wider text-neutral-400">
+          <span>Log da fila local (Dexie.js → PostgreSQL)</span>
+          <span className="text-[#f97316]">Simulação interativa</span>
+        </div>
+
+        <ul className="space-y-2 font-mono text-xs">
+          {logs.map((entry, idx) => (
+            <li
+              key={entry.id}
+              className={`flex items-start gap-2.5 py-1.5 border-b border-white/5 last:border-b-0 ${
+                idx === 0 ? "text-neutral-100" : "text-neutral-400"
+              }`}
+            >
+              <span
+                className={`shrink-0 px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                  entry.tag === "INDEXEDDB"
+                    ? "bg-amber-500/15 text-amber-300"
+                    : entry.tag === "POSTGRESQL"
+                    ? "bg-[#f97316]/15 text-[#fb923c]"
+                    : "bg-[#1C1C1C] text-neutral-300"
+                }`}
+              >
+                {entry.tag}
+              </span>
+              <span className="leading-relaxed text-pretty">{entry.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function ConcursosPdfDemo() {
   const [pdfStage, setPdfStage] = useState<
     "idle" | "queued" | "merging" | "done"
   >("idle");
@@ -201,420 +337,189 @@ function InteractiveSystemMockup({ id }: { id: ProjectId }) {
     "Worker Horizon pronto • 3 anexos aguardando unificação"
   );
 
-  // 03. Meu Porto Live Affinity Matcher State
-  const allPortoTags = [
-    "Robótica",
-    "Matemática",
-    "Programação",
-    "Xadrez",
-    "Física",
-    "IA",
+  const triggerPdfMerge = () => {
+    if (pdfStage === "queued" || pdfStage === "merging") return;
+    setPdfStage("queued");
+    setPdfLog("Job despachado para Redis Horizon (queue: pdf-engine)...");
+    setTimeout(() => {
+      setPdfStage("merging");
+      setPdfLog(
+        "Chromium Headless unificando 3 PDFs e gerando hash SHA-256..."
+      );
+    }, 420);
+    setTimeout(() => {
+      setPdfStage("done");
+      setPdfLog(
+        "Dossiê_Consolidado_2026.pdf gerado (2.86 MB) em 318ms • Assinado"
+      );
+    }, 1150);
+  };
+
+  const docs = [
+    {
+      name: "001_Edital_Abertura_Normativo.pdf",
+      size: "1.8 MB",
+      status: pdfStage === "done" ? "Mesclado ✓" : "Assinado",
+    },
+    {
+      name: "002_Anexo_I_Quadro_De_Vagas.pdf",
+      size: "640 KB",
+      status: pdfStage === "done" ? "Mesclado ✓" : "Anexado",
+    },
+    {
+      name: "003_Cronograma_Oficial.pdf",
+      size: "420 KB",
+      status: pdfStage === "done" ? "Mesclado ✓" : "Pronto",
+    },
   ];
+
+  return (
+    <div className="rounded-xl bg-[#111111]/90 border border-white/10 p-5 space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-white/10">
+        <div className="flex items-center gap-2 text-xs font-mono text-neutral-300">
+          <SolarFileText className="w-4 h-4 text-[#f97316]" />
+          <span>Motor PDF Headless</span>
+        </div>
+
+        <button
+          type="button"
+          onClick={triggerPdfMerge}
+          disabled={pdfStage === "queued" || pdfStage === "merging"}
+          className="px-3 py-1.5 rounded-lg bg-[#f97316] hover:bg-[#fb923c] disabled:opacity-60 text-[#111111] text-xs font-mono font-bold inline-flex items-center gap-1.5 transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98]"
+        >
+          <SolarLayers className="w-3.5 h-3.5" />
+          <span>
+            {pdfStage === "idle" && "Unificar PDFs"}
+            {pdfStage === "queued" && "Fila Horizon..."}
+            {pdfStage === "merging" && "Compilando..."}
+            {pdfStage === "done" && "Reprocessar"}
+          </span>
+        </button>
+      </div>
+
+      <ul className="divide-y divide-white/5 text-xs font-mono">
+        {docs.map((doc) => (
+          <li
+            key={doc.name}
+            className="py-2 flex items-center justify-between gap-3"
+          >
+            <span className="text-neutral-200 truncate">{doc.name}</span>
+            <div className="flex items-center gap-3 shrink-0">
+              <span className="text-neutral-500">{doc.size}</span>
+              <span className="text-[#f97316]">{doc.status}</span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div className="pt-3 border-t border-white/10 text-xs font-mono text-neutral-300 truncate">
+        &gt; {pdfLog}
+      </div>
+    </div>
+  );
+}
+
+function MeuPortoAffinityDemo() {
+  const tags = ["Robótica", "Matemática", "Programação", "Xadrez", "Física", "IA"];
   const [selectedTags, setSelectedTags] = useState<string[]>([
     "Robótica",
     "Matemática",
     "Programação",
     "Xadrez",
   ]);
-  const [protocolApproved, setProtocolApproved] = useState(false);
 
-  // 04. PizzaShop Live Optimistic Order Queue State
+  const toggleTag = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag)
+        ? prev.length > 1
+          ? prev.filter((t) => t !== tag)
+          : prev
+        : [...prev, tag]
+    );
+  };
+
+  const affinityScore = Math.min(99, Math.round(82 + selectedTags.length * 3.5));
+
+  return (
+    <div className="rounded-xl bg-[#111111]/90 border border-white/10 p-5 space-y-4">
+      <div className="flex items-center justify-between gap-3 pb-3 border-b border-white/10">
+        <span className="inline-flex items-center gap-2 text-xs font-mono text-neutral-300">
+          <SolarUsers className="w-4 h-4 text-[#f97316]" />
+          <span>Pareamento por Afinidade</span>
+        </span>
+        <span className="px-2 py-0.5 rounded-md bg-[#1C1C1C] border border-[#f97316]/35 text-[#f97316] text-xs font-mono font-semibold">
+          {affinityScore}% compatível
+        </span>
+      </div>
+
+      <div className="flex items-center justify-between gap-4 text-xs">
+        <div>
+          <div className="font-mono text-neutral-500">Mentor Veterano</div>
+          <div className="text-sm font-semibold text-white mt-0.5">
+            {selectedTags.includes("IA") || selectedTags.includes("Física")
+              ? "Beatriz L. • 9º Ano"
+              : "Gabriel M. • 9º Ano"}
+          </div>
+        </div>
+        <div className="text-right">
+          <div className="font-mono text-neutral-500">Estudante Afilhado</div>
+          <div className="text-sm font-semibold text-white mt-0.5">
+            Lucas S. • 6º Ano
+          </div>
+        </div>
+      </div>
+
+      <div className="pt-3 border-t border-white/10 space-y-2">
+        <div className="text-[11px] font-mono text-neutral-400">
+          Selecione interesses para recalcular a afinidade:
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {tags.map((tag) => {
+            const isSelected = selectedTags.includes(tag);
+            return (
+              <button
+                key={tag}
+                type="button"
+                onClick={() => toggleTag(tag)}
+                className={`px-2.5 py-1 rounded-md text-xs font-mono transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.97] ${
+                  isSelected
+                    ? "bg-[#f97316] text-[#111111] font-bold"
+                    : "bg-[#1C1C1C] border border-white/10 text-neutral-300 hover:border-[#f97316]/45"
+                }`}
+              >
+                #{tag}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PizzaShopQueueDemo() {
   const [orders, setOrders] = useState([
     {
       id: "#ORD9821",
       customer: "Mariana Costa",
       status: "Preparando" as "Preparando" | "Em entrega" | "Entregue",
       total: "R$ 89,90",
-      amount: 89.9,
     },
     {
       id: "#ORD9820",
       customer: "Rafael Mendes",
       status: "Em entrega" as "Preparando" | "Em entrega" | "Entregue",
       total: "R$ 124,50",
-      amount: 124.5,
     },
     {
       id: "#ORD9819",
       customer: "Beatriz Silva",
       status: "Entregue" as "Preparando" | "Em entrega" | "Entregue",
       total: "R$ 68,00",
-      amount: 68.0,
     },
   ]);
-  const [revenue, setRevenue] = useState(48290);
-  const [ordersToday, setOrdersToday] = useState(142);
-  const [lastMutationMs, setLastMutationMs] = useState("0.8ms");
-
-  if (id === "gide") {
-    const handleToggleNetwork = () => {
-      if (isOffline) {
-        setIsOffline(false);
-        if (pendingQueue > 0) {
-          const flushed = pendingQueue;
-          setPendingQueue(0);
-          setSyncLog(
-            `Sync concluído! ${flushed} voto(s) do IndexedDB gravados no PostgreSQL`
-          );
-        } else {
-          setSyncLog("Conexão restabelecida • Sync PostgreSQL ativo");
-        }
-      } else {
-        setIsOffline(true);
-        setSyncLog(
-          "Rede desconectada • Persistência local Dexie.js assumiu a operação"
-        );
-      }
-    };
-
-    const handleEmitVote = () => {
-      const nextCode = `GD${Math.floor(1000 + Math.random() * 9000)}`;
-      setVoucherHash(nextCode);
-      setVouchersCount((prev) => prev + 1);
-      setQuorumPct((prev) => Math.min(99.9, Number((prev + 0.2).toFixed(1))));
-      setDocentePct((prev) => Math.min(100, prev + 1));
-      setTecnicoPct((prev) => Math.min(100, prev + 2));
-      setEstudantePct((prev) => Math.min(100, prev + 2));
-
-      if (isOffline) {
-        setPendingQueue((prev) => {
-          const next = prev + 1;
-          setSyncLog(
-            `Voucher #${nextCode} salvo localmente no IndexedDB (${next} na fila)`
-          );
-          return next;
-        });
-      } else {
-        setSyncLog(
-          `Voucher #${nextCode} apurado e persistido em 42ms (ACID OK)`
-        );
-      }
-    };
-
-    return (
-      <div className="p-5 sm:p-6 space-y-4 bg-[#141118]/90 text-[#fff7ed] select-none">
-        {/* Interactive Action Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#fed7aa]/10">
-          <button
-            type="button"
-            onClick={handleToggleNetwork}
-            className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold border flex items-center gap-2 transition-colors duration-200 cursor-pointer active:scale-[0.98] ${
-              isOffline
-                ? "bg-amber-500/20 text-amber-300 border-amber-400/40"
-                : "bg-[#221b29] text-[#fed7aa] border-[#fed7aa]/15 hover:border-[#f97316]/50"
-            }`}
-          >
-            <span
-              className={`w-2 h-2 rounded-full ${
-                isOffline ? "bg-amber-400 animate-ping" : "bg-emerald-400"
-              }`}
-            />
-            <span>
-              {isOffline
-                ? "Rede: OFFLINE (Reconectar)"
-                : "Rede: ONLINE (Simular Queda)"}
-            </span>
-          </button>
-
-          <button
-            type="button"
-            onClick={handleEmitVote}
-            className="px-3 py-1.5 rounded-lg bg-[#f97316] hover:bg-[#fb923c] text-[#120f17] text-xs font-mono font-bold flex items-center gap-1.5 transition-colors duration-200 cursor-pointer active:scale-[0.97]"
-          >
-            <SolarQrCode className="w-3.5 h-3.5" />
-            <span>+ Simular Voto QR</span>
-          </button>
-        </div>
-
-        <div className="grid grid-cols-3 gap-3">
-          <div className="p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10">
-            <div className="text-xs font-mono text-neutral-400">
-              Índice Consolidado
-            </div>
-            <div className="text-2xl font-bold font-mono text-[#f97316] mt-1">
-              {quorumPct.toFixed(1)}%
-            </div>
-            <div className="text-xs text-neutral-300 mt-1 flex items-center gap-1">
-              <SolarCheck className="w-3.5 h-3.5 text-[#f97316]" />
-              <span>Quórum atingido</span>
-            </div>
-          </div>
-
-          <div className="p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10">
-            <div className="text-xs font-mono text-neutral-400">
-              Vouchers Validados
-            </div>
-            <div className="text-2xl font-bold font-mono text-[#fff7ed] mt-1">
-              {vouchersCount.toLocaleString("pt-BR")}
-            </div>
-            <div className="text-xs text-neutral-400 mt-1">100% Anônimos</div>
-          </div>
-
-          <div className="p-3 rounded-lg bg-[#2c2234]/85 border border-[#fed7aa]/15 flex flex-col justify-between">
-            <div className="flex items-center justify-between text-xs font-mono text-[#f97316]">
-              <span>{isOffline ? "Dexie Queue" : "Sync Local"}</span>
-              <SolarWifiOff className="w-4 h-4" />
-            </div>
-            <div className="text-xs font-mono text-neutral-200">
-              {pendingQueue > 0
-                ? `${pendingQueue} pendente(s)`
-                : "IndexedDB • Limpo"}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-          <div className="sm:col-span-7 p-4 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10 space-y-3">
-            <div className="text-xs font-mono uppercase tracking-wider text-neutral-400">
-              Participação por Segmento (Tempo Real)
-            </div>
-            {[
-              { label: "Equipe Docente", pct: docentePct },
-              { label: "Equipe Técnica e Apoio", pct: tecnicoPct },
-              { label: "Estudantes e Responsáveis", pct: estudantePct },
-            ].map((seg) => (
-              <div key={seg.label} className="space-y-1">
-                <div className="flex justify-between text-xs font-mono">
-                  <span className="text-neutral-300">{seg.label}</span>
-                  <span className="text-[#fff7ed] font-semibold">
-                    {seg.pct}%
-                  </span>
-                </div>
-                <div className="h-2 w-full rounded-full bg-[#2c2234] overflow-hidden">
-                  <div
-                    className="h-full rounded-full bg-[#f97316] transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-                    style={{ width: `${seg.pct}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="sm:col-span-5 p-4 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10 flex flex-col items-center justify-center text-center">
-            <div className="p-2 rounded-lg bg-[#fed7aa] text-[#120f17] mb-2">
-              <SolarQrCode className="w-9 h-9" />
-            </div>
-            <div className="text-xs font-mono font-semibold text-[#fff7ed]">
-              VOUCHER #{voucherHash}
-            </div>
-            <div className="text-xs font-mono text-[#f97316] mt-0.5">
-              {isOffline ? "Armazenado Offline" : "Uso Único • Verificado"}
-            </div>
-          </div>
-        </div>
-
-        {/* Live Telemetry Console Strip */}
-        <div className="px-3 py-2 rounded-lg bg-[#0d0a10] border border-[#fed7aa]/10 text-xs font-mono text-[#fed7aa]/85 flex items-center justify-between gap-2">
-          <span className="truncate">&gt; {syncLog}</span>
-          <span className="text-[#f97316] shrink-0">DEXIE.JS</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (id === "concursos") {
-    const triggerPdfMerge = () => {
-      if (pdfStage === "queued" || pdfStage === "merging") return;
-      setPdfStage("queued");
-      setPdfLog("Job despachado para Redis Horizon (queue: pdf-engine)...");
-      setTimeout(() => {
-        setPdfStage("merging");
-        setPdfLog(
-          "Chromium Headless unificando 3 PDFs e gerando hash SHA-256..."
-        );
-      }, 420);
-      setTimeout(() => {
-        setPdfStage("done");
-        setPdfLog(
-          "Dossiê_Consolidado_2026.pdf gerado (2.86 MB) em 318ms • Assinado"
-        );
-      }, 1150);
-    };
-
-    return (
-      <div className="p-5 sm:p-6 space-y-4 bg-[#141118]/90 text-[#fff7ed] select-none">
-        <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-md bg-[#2c2234] border border-[#fed7aa]/10 text-[#f97316]">
-              <SolarFileText className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="text-xs font-mono text-[#f97316]">
-                CERTAME #2026/01 • HOMOLOGADO
-              </div>
-              <div className="text-sm font-semibold text-[#fff7ed]">
-                Processo Seletivo Público • Quadro Geral
-              </div>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            onClick={triggerPdfMerge}
-            disabled={pdfStage === "queued" || pdfStage === "merging"}
-            className="px-3 py-1.5 rounded-lg bg-[#f97316] hover:bg-[#fb923c] disabled:opacity-60 text-[#120f17] text-xs font-mono font-bold flex items-center gap-1.5 transition-colors duration-200 cursor-pointer active:scale-[0.97]"
-          >
-            <SolarLayers className="w-3.5 h-3.5" />
-            <span>
-              {pdfStage === "idle" && "Unificar PDFs (Testar)"}
-              {pdfStage === "queued" && "Fila Horizon..."}
-              {pdfStage === "merging" && "Compilando PDF..."}
-              {pdfStage === "done" && "Reprocessar Dossiê"}
-            </span>
-          </button>
-        </div>
-
-        <div className="p-4 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10 space-y-2.5">
-          <div className="flex items-center justify-between text-xs font-mono text-neutral-400 pb-1">
-            <span>PIPELINE DE UNIFICAÇÃO DE DOCUMENTOS</span>
-            <span className="text-[#f97316] flex items-center gap-1">
-              <SolarLayers className="w-3.5 h-3.5" /> Chromium Headless
-            </span>
-          </div>
-          {[
-            {
-              name: "001_Edital_Abertura_Normativo.pdf",
-              size: "1.8 MB",
-              status: pdfStage === "done" ? "Mesclado ✓" : "Assinado",
-            },
-            {
-              name: "002_Anexo_I_Quadro_De_Vagas.pdf",
-              size: "640 KB",
-              status: pdfStage === "done" ? "Mesclado ✓" : "Anexado",
-            },
-            {
-              name: "003_Cronograma_Oficial_Consolidado.pdf",
-              size: "420 KB",
-              status: pdfStage === "done" ? "Mesclado ✓" : "Unificado",
-            },
-          ].map((doc) => (
-            <div
-              key={doc.name}
-              className="flex items-center justify-between px-3 py-2 rounded-md bg-[#2c2234]/85 border border-[#fed7aa]/10 text-xs font-mono"
-            >
-              <span className="text-neutral-200 truncate">{doc.name}</span>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="text-neutral-400">{doc.size}</span>
-                <span className="text-[#f97316]">{doc.status}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="px-3 py-2 rounded-lg bg-[#0d0a10] border border-[#fed7aa]/10 text-xs font-mono text-[#fed7aa]/85 flex items-center justify-between gap-2">
-          <span className="truncate">&gt; {pdfLog}</span>
-          <span className="text-[#f97316] shrink-0">HORIZON</span>
-        </div>
-      </div>
-    );
-  }
-
-  if (id === "meu-porto") {
-    const toggleTag = (tag: string) => {
-      setProtocolApproved(false);
-      setSelectedTags((prev) =>
-        prev.includes(tag)
-          ? prev.length > 1
-            ? prev.filter((t) => t !== tag)
-            : prev
-          : [...prev, tag]
-      );
-    };
-
-    const affinityScore = Math.min(99, 82 + selectedTags.length * 3.5);
-
-    return (
-      <div className="p-5 sm:p-6 space-y-4 bg-[#141118]/90 text-[#fff7ed] select-none">
-        <div className="p-4 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10 space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase tracking-wider text-[#f97316] flex items-center gap-1.5">
-              <SolarUsers className="w-4 h-4" /> Pareamento de Mentoria
-              (Interativo)
-            </span>
-            <span className="px-2.5 py-0.5 rounded bg-[#2c2234] border border-[#f97316]/40 text-[#f97316] text-xs font-mono font-bold">
-              {Math.round(affinityScore)}% Afinidade
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              {
-                role: "Mentor Veterano",
-                student:
-                  selectedTags.includes("IA") || selectedTags.includes("Física")
-                    ? "Beatriz L. • 9º Ano"
-                    : "Gabriel M. • 9º Ano",
-              },
-              { role: "Estudante Afilhado", student: "Lucas S. • 6º Ano" },
-            ].map((pair) => (
-              <div
-                key={pair.role}
-                className="p-3 rounded-md bg-[#2c2234]/85 border border-[#fed7aa]/10"
-              >
-                <div className="text-xs font-mono text-neutral-400">
-                  {pair.role}
-                </div>
-                <div className="text-sm font-semibold text-[#fff7ed] mt-0.5">
-                  {pair.student}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          <div className="space-y-1.5">
-            <div className="text-[11px] font-mono text-neutral-400">
-              CLIQUE NAS TAGS PARA RECALCULAR O ALGORITMO DE AFINIDADE:
-            </div>
-            <div className="flex flex-wrap gap-1.5">
-              {allPortoTags.map((tag) => {
-                const isSelected = selectedTags.includes(tag);
-                return (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => toggleTag(tag)}
-                    className={`px-2.5 py-1 rounded text-xs font-mono transition-colors duration-150 cursor-pointer ${
-                      isSelected
-                        ? "bg-[#f97316] text-[#120f17] font-bold"
-                        : "bg-[#2c2234] border border-[#fed7aa]/10 text-neutral-300 hover:border-[#f97316]/40"
-                    }`}
-                  >
-                    #{tag}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-
-        <div className="p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10 flex items-center justify-between gap-3">
-          <div>
-            <div className="text-xs font-mono text-neutral-400">
-              {protocolApproved
-                ? "PROTOCOLO #4093 • PAR VALIDADO"
-                : "PROTOCOLO #4092 • COORDENAÇÃO"}
-            </div>
-            <div className="text-xs text-neutral-200 mt-0.5">
-              {protocolApproved
-                ? `Dupla homologada com ${Math.round(affinityScore)}% de compatibilidade`
-                : "Solicitação pedagógica respondida em 14 minutos"}
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => setProtocolApproved((prev) => !prev)}
-            className="px-3 py-1.5 rounded-lg bg-[#2c2234] hover:bg-[#f97316] hover:text-[#120f17] border border-[#f97316]/40 text-xs font-mono font-semibold text-[#f97316] transition-colors duration-200 cursor-pointer shrink-0"
-          >
-            {protocolApproved ? "Homologado ✓" : "Homologar Dupla"}
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   const cycleOrderStatus = (orderId: string) => {
-    const latencies = ["0.4ms", "0.6ms", "0.5ms", "0.7ms"];
-    setLastMutationMs(latencies[ordersToday % latencies.length]);
     setOrders((prev) =>
       prev.map((o) => {
         if (o.id !== orderId) return o;
@@ -624,100 +529,106 @@ function InteractiveSystemMockup({ id }: { id: ProjectId }) {
             : o.status === "Em entrega"
             ? "Entregue"
             : "Preparando";
-        if (nextStatus === "Entregue") {
-          setRevenue((r) => Math.round(r + o.amount));
-          setOrdersToday((c) => c + 1);
-        }
         return { ...o, status: nextStatus };
       })
     );
   };
 
   return (
-    <div className="p-5 sm:p-6 space-y-4 bg-[#141118]/90 text-[#fff7ed] select-none">
-      <div className="grid grid-cols-2 gap-3">
-        <div className="p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10">
-          <div className="text-xs font-mono text-neutral-400">
-            Receita Mensal (Tempo Real)
-          </div>
-          <div className="text-2xl font-bold font-mono text-[#fff7ed] mt-1">
-            R$ {revenue.toLocaleString("pt-BR")}
-          </div>
-          <div className="text-xs text-[#f97316] mt-1">
-            Mutação Otimista • Latência {lastMutationMs}
-          </div>
-        </div>
-
-        <div className="p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10">
-          <div className="flex items-center justify-between text-xs font-mono text-neutral-400">
-            <span>Pedidos Hoje</span>
-            <SolarShoppingBag className="w-4 h-4 text-[#f97316]" />
-          </div>
-          <div className="text-2xl font-bold font-mono text-[#fff7ed] mt-1">
-            {ordersToday}
-          </div>
-          <div className="text-xs text-neutral-400 mt-1">
-            Clique em um pedido abaixo para avançar
-          </div>
-        </div>
+    <div className="rounded-xl bg-[#111111]/90 border border-white/10 p-5 space-y-3">
+      <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs font-mono">
+        <span className="inline-flex items-center gap-2 text-neutral-300">
+          <SolarShoppingBag className="w-4 h-4 text-[#f97316]" />
+          <span>Fila de Pedidos (Mutação Otimista)</span>
+        </span>
+        <span className="text-neutral-500">Clique no status</span>
       </div>
 
-      <div className="p-3 rounded-lg bg-[#221b29]/80 border border-[#fed7aa]/10 space-y-2">
-        <div className="flex items-center justify-between text-xs font-mono text-neutral-400 uppercase tracking-wider">
-          <span>Fila Operacional Otimista (Clique no status)</span>
-          <span className="text-[#f97316]">ZOD + TANSTACK</span>
-        </div>
+      <ul className="divide-y divide-white/5 text-xs font-mono">
         {orders.map((order) => (
-          <div
+          <li
             key={order.id}
-            className="flex items-center justify-between px-3 py-2 rounded-md bg-[#2c2234]/85 border border-[#fed7aa]/10 text-xs font-mono"
+            className="py-2.5 flex items-center justify-between gap-3"
           >
-            <div className="flex items-center gap-3">
-              <span className="text-[#f97316]">{order.id}</span>
-              <span className="text-neutral-200 font-sans">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="text-[#f97316] shrink-0">{order.id}</span>
+              <span className="text-neutral-200 font-sans truncate">
                 {order.customer}
               </span>
             </div>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2.5 shrink-0">
               <button
                 type="button"
                 onClick={() => cycleOrderStatus(order.id)}
-                className={`px-2.5 py-1 rounded text-xs font-mono font-semibold transition-colors duration-150 cursor-pointer ${
+                className={`px-2.5 py-1 rounded-md text-xs font-mono font-semibold transition-colors duration-150 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.97] ${
                   order.status === "Entregue"
-                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-400/30"
+                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-400/30"
                     : order.status === "Em entrega"
-                    ? "bg-[#f97316] text-[#120f17]"
-                    : "bg-[#1a1520] text-[#fed7aa] border border-[#fed7aa]/25 hover:border-[#f97316]"
+                    ? "bg-[#f97316] text-[#111111]"
+                    : "bg-[#1C1C1C] text-neutral-200 border border-white/10 hover:border-[#f97316]/50"
                 }`}
               >
                 {order.status} ↻
               </button>
-              <span className="text-[#fff7ed] font-semibold">
+              <span className="text-white font-semibold hidden sm:inline">
                 {order.total}
               </span>
             </div>
-          </div>
+          </li>
         ))}
+      </ul>
+    </div>
+  );
+}
+
+function ProjectMetaFooter({ project }: { project: CaseStudyItem }) {
+  return (
+    <div className="space-y-4 pt-4 border-t border-white/10">
+      <div className="flex flex-wrap gap-2">
+        {project.techStack.map((tech) => (
+          <span
+            key={tech}
+            className="px-2.5 py-1 rounded-md bg-[#1C1C1C] border border-white/10 text-xs font-mono text-neutral-200"
+          >
+            {tech}
+          </span>
+        ))}
+      </div>
+
+      <div>
+        {project.repoUrl ? (
+          <a
+            href={project.repoUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#f97316] hover:text-[#fed7aa] transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)]"
+          >
+            <span>{project.provenance}</span>
+            <SolarArrowUpRight className="w-4 h-4" />
+          </a>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-400">
+            <SolarLock className="w-3.5 h-3.5 text-[#f97316]" />
+            <span>{project.provenance}</span>
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
-interface RbProjectsProps {
-  magnetEnabled?: boolean;
-}
-
-export function RbProjects({ magnetEnabled = true }: RbProjectsProps) {
-  const [active, setActive] = useState<CaseStudyItem>(caseStudies[0]);
-
+export function RbProjects() {
   useEffect(() => {
     const handleSelectProject = (e: Event) => {
-      const customEvent = e as CustomEvent<{ projectId: ProjectId }>;
-      const found = caseStudies.find(
-        (p) => p.id === customEvent.detail?.projectId
-      );
-      if (found) setActive(found);
+      const customEvent = e as CustomEvent<{ projectId?: ProjectId }>;
+      const projectId = customEvent.detail?.projectId;
+      if (!projectId) return;
+      const target = document.getElementById(`project-${projectId}`);
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
     };
+
     window.addEventListener("portfolio:select-project", handleSelectProject);
     return () =>
       window.removeEventListener(
@@ -726,103 +637,70 @@ export function RbProjects({ magnetEnabled = true }: RbProjectsProps) {
       );
   }, []);
 
+  const [gide, concursos, meuPorto, pizzashop] = caseStudies;
+
   return (
-    <section id="projects" className="relative py-24 px-4 sm:px-8">
+    <section id="projects" className="relative py-24 sm:py-28 px-4 sm:px-8">
       <div className="max-w-7xl mx-auto space-y-12">
-        {/* Section Header + Project Tabs */}
+        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.5, ease: baseCurve }}
-          className="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
+          className="space-y-3"
         >
-          <div className="space-y-3">
-            <DecryptedText
-              text="02 // SISTEMAS SELECIONADOS"
-              className="text-xs text-[#f97316] uppercase tracking-widest"
-            />
-            <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#fff7ed] text-balance">
-              Projetos em produção.
-            </h2>
-          </div>
-
-          {/* React Bits Magnetic Tab Switcher (Outer rounded-2xl p-2 -> Inner rounded-lg per B3) */}
-          <div
-            role="tablist"
-            aria-label="Selecionar estudo de caso"
-            className="flex flex-wrap gap-2 p-2 rounded-2xl bg-[#141118]/75 backdrop-blur-xl border border-[#fed7aa]/10 w-fit"
-          >
-            {caseStudies.map((item) => {
-              const isSelected = active.id === item.id;
-              return (
-                <Magnet
-                  key={item.id}
-                  disabled={!magnetEnabled}
-                  strength={0.18}
-                >
-                  <button
-                    type="button"
-                    role="tab"
-                    aria-selected={isSelected}
-                    onClick={() => setActive(item)}
-                    className={`relative px-3 py-2 rounded-lg text-xs font-mono font-semibold transition-colors duration-200 ease-[cubic-bezier(0.22,1,0.36,1)] cursor-pointer active:scale-[0.98] ${
-                      isSelected
-                        ? "text-[#120f17]"
-                        : "text-neutral-300 hover:text-[#fff7ed]"
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="rbActiveProjectTab"
-                        transition={{
-                          type: "spring",
-                          stiffness: 420,
-                          damping: 32,
-                          mass: 0.7,
-                        }}
-                        className="absolute inset-0 rounded-lg bg-[#f97316]"
-                      />
-                    )}
-                    <span className="relative z-10">
-                      {item.index}. {item.title}
-                    </span>
-                  </button>
-                </Magnet>
-              );
-            })}
-          </div>
+          <DecryptedText
+            text="02 // SISTEMAS SELECIONADOS"
+            className="text-xs text-[#f97316] uppercase tracking-widest"
+          />
+          <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#fff7ed] text-balance">
+            Projetos em produção.
+          </h2>
         </motion.div>
 
-        {/* Main Case Study Spotlight Card */}
-        <SpotlightCard className="p-6 sm:p-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={active.id}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.24, ease: baseCurve }}
-              className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-            >
-              {/* Left 5 Cols: Outcome-driven description */}
-              <div className="lg:col-span-5 space-y-6">
+        {/* Featured Full-Width Project 01: GIDE */}
+        <motion.article
+          id={`project-${gide.id}`}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.5, ease: baseCurve }}
+        >
+          <SpotlightCard className="p-6 sm:p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+              <div className="lg:col-span-5 space-y-5">
                 <div className="space-y-3">
-                  <div className="text-xs font-mono uppercase tracking-wider text-[#f97316]">
-                    {active.category}
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-xs font-mono uppercase tracking-wider text-[#f97316]">
+                      {gide.index} • {gide.category}
+                    </span>
                   </div>
-                  <h3 className="text-3xl sm:text-4xl font-bold text-[#fff7ed] tracking-tight">
-                    {active.title}
-                  </h3>
-                  <p className="text-base text-neutral-300 text-pretty">
-                    {active.summary}
+
+                  <div className="flex flex-wrap items-baseline justify-between gap-4">
+                    <h3 className="text-3xl sm:text-4xl font-bold text-[#fff7ed] tracking-tight text-balance">
+                      {gide.title}
+                    </h3>
+                    {gide.metric && (
+                      <div className="inline-flex items-baseline gap-2">
+                        <span className="text-2xl font-bold font-mono text-[#f97316]">
+                          {gide.metric.value}
+                        </span>
+                        <span className="text-xs font-mono text-neutral-400">
+                          {gide.metric.label}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <p className="text-sm sm:text-base text-neutral-300 text-pretty">
+                    {gide.summary}
                   </p>
                 </div>
 
-                {/* Benefit bullets per Rule A5 (Bold benefit, then proof/detail, no hyphens) */}
-                <div className="space-y-3 pt-4 border-t border-[#fed7aa]/10">
-                  {active.outcomes.map((outcome) => (
-                    <div
+                <ul className="space-y-2.5 pt-4 border-t border-white/10">
+                  {gide.outcomes.map((outcome) => (
+                    <li
                       key={outcome.title}
                       className="text-sm text-neutral-300 text-pretty"
                     >
@@ -830,120 +708,136 @@ export function RbProjects({ magnetEnabled = true }: RbProjectsProps) {
                         {outcome.title}:{" "}
                       </strong>
                       <span>{outcome.detail}</span>
-                    </div>
+                    </li>
                   ))}
-                </div>
+                </ul>
 
-                {/* Tech Stack & Provenance Link */}
-                <div className="space-y-4 pt-4 border-t border-[#fed7aa]/10">
-                  <div className="flex flex-wrap gap-2">
-                    {active.techStack.map((tech) => (
-                      <span
-                        key={tech}
-                        className="px-2.5 py-1 rounded-md bg-[#2c2234] border border-[#fed7aa]/10 text-xs font-mono text-neutral-200"
-                      >
-                        {tech}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div>
-                    {active.repoUrl ? (
-                      <a
-                        href={active.repoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-mono font-semibold text-[#f97316] hover:text-[#fed7aa] transition-colors duration-200"
-                      >
-                        <span>{active.provenance}</span>
-                        <SolarArrowUpRight className="w-4 h-4" />
-                      </a>
-                    ) : (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-mono text-neutral-400">
-                        <SolarLock className="w-3.5 h-3.5 text-[#f97316]" />
-                        <span>{active.provenance}</span>
-                      </span>
-                    )}
-                  </div>
-                </div>
+                <ProjectMetaFooter project={gide} />
               </div>
 
-              {/* Right 7 Cols: Interactive TiltedCard Interface Preview */}
               <div className="lg:col-span-7">
-                <TiltedCard rotateAmplitude={5} scaleOnHover={1.008}>
-                  <div className="bg-[#1a1520]">
-                    {/* Minimal Window Chrome */}
-                    <div className="flex items-center justify-between px-4 py-3 bg-[#221b29] border-b border-[#fed7aa]/10">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#382b42]" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#382b42]" />
-                        <span className="w-2.5 h-2.5 rounded-full bg-[#382b42]" />
-                      </div>
-                      <div className="px-3 py-0.5 rounded bg-[#2c2234] border border-[#fed7aa]/10 text-xs font-mono text-neutral-300">
-                        {active.id}.producao.app
-                      </div>
-                      <div className="text-xs font-mono text-[#f97316]">
-                        Interface Real
-                      </div>
-                    </div>
-
-                    <InteractiveSystemMockup id={active.id} />
-                  </div>
-                </TiltedCard>
+                <GideOfflineDemo />
               </div>
-            </motion.div>
-          </AnimatePresence>
-        </SpotlightCard>
+            </div>
+          </SpotlightCard>
+        </motion.article>
 
-        {/* How It Works — 3 Steps per Rule A2 (#8 How it works, three steps) */}
-        <div className="pt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Secondary Projects 2-Column Grid: Portal de Concursos & Meu Porto */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
           {[
-            {
-              step: "PASSO 01",
-              title: "Diagnóstico na operação real",
-              description:
-                "Mapeio gargalos de rede, fluxos de atendimento e dados legados diretamente onde o sistema será usado.",
-            },
-            {
-              step: "PASSO 02",
-              title: "Arquitetura desacoplada e local",
-              description:
-                "Estruturo regras de negócio em Services e DTOs no Laravel com persistência IndexedDB e contratos tipados no React.",
-            },
-            {
-              step: "PASSO 03",
-              title: "Entrega em containers auditáveis",
-              description:
-                "Implanto com Docker, filas supervisionadas no Redis Horizon, trilhas de auditoria e conformidade com a LGPD.",
-            },
-          ].map((item, idx) => (
-            <motion.div
-              key={item.step}
+            { project: concursos, demo: <ConcursosPdfDemo /> },
+            { project: meuPorto, demo: <MeuPortoAffinityDemo /> },
+          ].map(({ project, demo }, idx) => (
+            <motion.article
+              key={project.id}
+              id={`project-${project.id}`}
               initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
+              viewport={{ once: true, amount: 0.15 }}
               transition={{
                 duration: 0.5,
                 delay: idx * 0.08,
                 ease: baseCurve,
               }}
             >
-              <SpotlightCard className="p-6 h-full flex flex-col justify-between gap-4">
-                <div className="space-y-2">
-                  <div className="text-xs font-mono text-[#f97316] font-semibold">
-                    {item.step}
+              <SpotlightCard className="p-6 sm:p-8 h-full flex flex-col justify-between gap-6">
+                <div className="space-y-5">
+                  <div className="space-y-3">
+                    <div className="text-xs font-mono uppercase tracking-wider text-[#f97316]">
+                      {project.index} • {project.category}
+                    </div>
+
+                    <div className="flex flex-wrap items-baseline justify-between gap-3">
+                      <h3 className="text-2xl sm:text-3xl font-bold text-[#fff7ed] tracking-tight text-balance">
+                        {project.title}
+                      </h3>
+                      {project.metric && (
+                        <div className="inline-flex items-baseline gap-1.5">
+                          <span className="text-xl font-bold font-mono text-[#f97316]">
+                            {project.metric.value}
+                          </span>
+                          <span className="text-xs font-mono text-neutral-400">
+                            {project.metric.label}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+
+                    <p className="text-sm text-neutral-300 text-pretty">
+                      {project.summary}
+                    </p>
                   </div>
-                  <h3 className="text-xl font-bold text-[#fff7ed] tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="text-sm text-neutral-300 text-pretty">
-                    {item.description}
-                  </p>
+
+                  <ul className="space-y-2 pt-4 border-t border-white/10">
+                    {project.outcomes.map((outcome) => (
+                      <li
+                        key={outcome.title}
+                        className="text-sm text-neutral-300 text-pretty"
+                      >
+                        <strong className="text-[#fff7ed] font-semibold">
+                          {outcome.title}:{" "}
+                        </strong>
+                        <span>{outcome.detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="space-y-5">
+                  {demo}
+                  <ProjectMetaFooter project={project} />
                 </div>
               </SpotlightCard>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
+
+        {/* Project 04: Open Source Showcase (PizzaShop Web) */}
+        <motion.article
+          id={`project-${pizzashop.id}`}
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.5, ease: baseCurve }}
+        >
+          <SpotlightCard className="p-6 sm:p-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
+              <div className="lg:col-span-5 space-y-5">
+                <div className="space-y-3">
+                  <div className="text-xs font-mono uppercase tracking-wider text-[#f97316]">
+                    {pizzashop.index} • {pizzashop.category}
+                  </div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-[#fff7ed] tracking-tight text-balance">
+                    {pizzashop.title}
+                  </h3>
+                  <p className="text-sm sm:text-base text-neutral-300 text-pretty">
+                    {pizzashop.summary}
+                  </p>
+                </div>
+
+                <ul className="space-y-2 pt-4 border-t border-white/10">
+                  {pizzashop.outcomes.map((outcome) => (
+                    <li
+                      key={outcome.title}
+                      className="text-sm text-neutral-300 text-pretty"
+                    >
+                      <strong className="text-[#fff7ed] font-semibold">
+                        {outcome.title}:{" "}
+                      </strong>
+                      <span>{outcome.detail}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <ProjectMetaFooter project={pizzashop} />
+              </div>
+
+              <div className="lg:col-span-7">
+                <PizzaShopQueueDemo />
+              </div>
+            </div>
+          </SpotlightCard>
+        </motion.article>
       </div>
     </section>
   );

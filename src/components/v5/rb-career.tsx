@@ -56,7 +56,7 @@ export function RbCareer() {
           className="space-y-3"
         >
           <DecryptedText
-            text="04 // TRAJETÓRIA PROFISSIONAL"
+            text="03 // TRAJETÓRIA PROFISSIONAL"
             className="text-xs text-[#f97316] uppercase tracking-widest"
           />
           <h2 className="text-3xl sm:text-5xl font-bold tracking-tight text-[#fff7ed] text-balance">
@@ -82,10 +82,10 @@ export function RbCareer() {
                 <SpotlightCard className="p-6 sm:p-8">
                   <div className="flex flex-col lg:flex-row items-start gap-6">
                     <div
-                      className={`w-12 h-12 rounded-lg flex items-center justify-center shrink-0 border ${
+                      className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 border ${
                         exp.isCurrent
-                          ? "bg-[#2c2234] border-[#f97316]/40 text-[#f97316]"
-                          : "bg-[#221b29] border-[#fed7aa]/10 text-[#fed7aa]/80"
+                          ? "bg-[#1C1C1C] border-[#f97316]/40 text-[#f97316]"
+                          : "bg-[#111111] border-white/10 text-neutral-300"
                       }`}
                     >
                       <Icon className="w-6 h-6" />
@@ -99,16 +99,16 @@ export function RbCareer() {
                               {exp.period}
                             </span>
                             <span
-                              className={`px-2 py-0.5 rounded text-xs font-mono font-semibold ${
+                              className={`px-2 py-0.5 rounded-md text-xs font-mono font-semibold ${
                                 exp.isCurrent
-                                  ? "bg-[#2c2234] text-[#f97316] border border-[#f97316]/30"
-                                  : "bg-[#221b29] text-neutral-400 border border-[#fed7aa]/10"
+                                  ? "bg-[#1C1C1C] text-[#f97316] border border-[#f97316]/30"
+                                  : "bg-[#111111] text-neutral-400 border border-white/10"
                               }`}
                             >
                               {exp.badge}
                             </span>
                           </div>
-                          <h3 className="text-2xl font-bold text-[#fff7ed] tracking-tight">
+                          <h3 className="text-2xl font-bold text-[#fff7ed] tracking-tight text-balance">
                             {exp.role}
                           </h3>
                         </div>
@@ -133,9 +133,9 @@ export function RbCareer() {
                         ))}
                       </ul>
 
-                      <div className="pt-4 border-t border-[#fed7aa]/10 text-xs font-mono text-neutral-400">
-                        <strong className="text-[#fff7ed] font-semibold">
-                          Tecnologias utilizadas:{" "}
+                      <div className="mt-2 pt-4 border-t border-white/10 flex flex-col sm:flex-row sm:items-baseline gap-1 sm:gap-2 text-xs font-mono text-neutral-400 text-pretty">
+                        <strong className="text-[#fff7ed] font-semibold shrink-0">
+                          Tecnologias utilizadas:
                         </strong>
                         <span>{exp.technologies}</span>
                       </div>
